@@ -7,6 +7,7 @@ drop table if exists AttitudinalPsyche;
 drop table if exists MBTI;
 drop table if exists OPS;
 drop table if exists Teacher;
+drop table if exists App_User;
 
 
 
@@ -38,6 +39,11 @@ systemID int not null,
 foreign key (teacherID) references Teacher(id),
 foreign key (entryID) references Entry(id),
 foreign key (typologySystemID) references TypologySystem(id));
+
+
+
+insert into Enneagram
+values();
 
 
 

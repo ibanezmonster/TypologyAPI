@@ -1,6 +1,6 @@
 package com.typology.repository;
 
-import static com.typology.namedQueries.NamedQueriesDB.GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS;
+import static com.typology.query.EnneagramQuery.GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS;
 
 import java.util.List;
 

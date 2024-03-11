@@ -22,7 +22,7 @@ import com.typology.service.EntryService;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 
-@RequestMapping("/api/entry")
+@RequestMapping("/api")
 @RestController
 @AllArgsConstructor
 public class EntryController
@@ -43,13 +43,13 @@ public class EntryController
 		return entryService.getEntry(id); 
 	}
 		
-	@PostMapping//("/entry")
+	@PostMapping("/add_entry")
     @ResponseStatus(HttpStatus.CREATED)
 	public Entry createEntry(@RequestBody Entry entry){
 		return entryService.createEntry(entry);
 	}	
 	
-	@PutMapping("/{id}")
+	@PutMapping("/search_by_system/enneagram/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public Entry updateEntry(@PathVariable long id, @RequestBody Entry entry){
 		return entryService.updateEntry(entry);
@@ -72,22 +72,13 @@ public class EntryController
 	//	}
 	
 	
-	@GetMapping("/entry/enneagram/{type}")
+	@GetMapping("/enneagram/{type}")
 	@ResponseStatus(HttpStatus.OK)
 	public List<Entry> findAllOfEnneagramCoreType(@PathVariable int type){
 		return entryService.findAllOfEnneagramCoreType(type);
 	}
 	
 	
-	@GetMapping("/entry/enneagram/2")
-	@ResponseStatus(HttpStatus.OK)
-	public List<Entry> findAllOfEnneagramCoreType2(){
-		return entryService.findAllOfEnneagramCoreType2();
-	}
-	
-	//@GetMapping("/api/entry/enneagram/9")
-		//public ResponseEntity<List<Entry>> findAllOfEnneagramCoreType(){
-		//return ResponseEntity.ok().body(entryService.findAllOfEnneagramCoreType(type));	
 		
 	////////tests///////////////////////
 }

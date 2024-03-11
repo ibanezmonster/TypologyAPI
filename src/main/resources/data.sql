@@ -1,87 +1,6 @@
-drop table if exists TypologySystem;
-drop table if exists Entry;
-drop table if exists Typing;
-drop table if exists Enneagram;
-drop table if exists Socionics;
-drop table if exists AttitudinalPsyche;
-drop table if exists MBTI;
-drop table if exists OPS;
-drop table if exists Teacher;
-
-
-
-
-
-
---create main tables
-
-create table TypologySystem
-(id int not null primary key, 
-name varchar(255));
-
-create table Teacher
-(id int not null primary key, 
-name varchar(255));
-
-create table Entry
-(id int not null primary key, 
-name varchar(255));
-
-
---h2 only: foreign key constraint
-
-create table Typing
-(id int not null primary key, 
-teacherID int not null,
-entryID int not null,
-typologySystemID int not null,
-foreign key (teacherID) references Teacher(id),
-foreign key (entryID) references Entry(id),
-foreign key (typologySystemID) references TypologySystem(id));
-
-
-
-
-
-
-
-
-
-
-
---create typology system tables
-
---h2 only: foreign key constraint
-
-create table Enneagram
-(id int not null primary key, 
-teacherID int not null,
-core_type int not null check(core_type between 1 and 9),
-tritype int,
-foreign key (teacherID) references Teacher(id));
-
-create table Socionics
-(id int not null primary key);
-
-create table AttitudinalPsyche
-(id int not null primary key);
-
-create table MBTI
-(id int not null primary key);
-
-create table OPS
-(id int not null primary key);
-
-
-
-
-
-
-
-
 --insert test data into tables
 
-insert into TypologySystem(id, name)
+insert into Typology_System(id, name)
 values
 (1, 'enneagram'),
 (2, 'socionics'),
@@ -97,3 +16,22 @@ values
 (3, 'Goblins of Discord'),
 (4, 'Katherine Fauvre'),
 (5, 'ops');
+
+
+insert into Enneagram_Typing
+(id, core_type, wing, tritype_ordered, tritype_unordered, overlay, instinct_main, instinct_stack, instinct_stack_flow, ex_instinct_main, ex_instinct_stack, ex_instinct_stack_abbreviation, ex_instinct_stack_flow)
+values
+(111, 9, 8, 973, 379, 468, 'sp', 'sp/sx', 'synflow', 'UN', 'UN/CY/AY', 'PIS', 'synflow');
+
+insert into Entry(id, name, enneagram_core_type)
+values
+(1, 'Cupcakke', 9);
+
+insert into App_User(id, name, pwd, role, registration_timestamp, status)
+values
+(11111, 'admin', '123', 'ADMIN', null, 'enabled'),
+(22222, 'noob2', '123abc', 'USER', null, 'enabled');
+
+insert into Authorities(authority)
+values
+('admin');

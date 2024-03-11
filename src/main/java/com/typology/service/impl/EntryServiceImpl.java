@@ -55,7 +55,6 @@ public class EntryServiceImpl implements EntryService
 		else {
 			throw new ResourceNotFoundException("Record not found with id : " + entry.getId());
 		}
-		
     }
 	
 	@Override
@@ -68,8 +67,7 @@ public class EntryServiceImpl implements EntryService
 		
 		else {
 			throw new ResourceNotFoundException("Record not found with id : " + id);
-		}
-		
+		}		
 	}
 	
 	@Override
@@ -81,11 +79,4 @@ public class EntryServiceImpl implements EntryService
 		//Optional<List<Entry>> entries = this.entryRepository.findAllOfEnneagramCoreType(type);
 		//return entries.orElseThrow(ResourceNotFoundException::new);
 	}
-	
-	@Override
-	public List<Entry> findAllOfEnneagramCoreType2(){		
-		List<Entry> entries = this.entryRepository.findAllOfEnneagramCoreType2();
-		return entries;
-	}
-
 }

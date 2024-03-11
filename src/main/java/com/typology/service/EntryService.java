@@ -22,5 +22,4 @@ public interface EntryService
 	//specialized queries
 	//List<Entry> findAllOfEnneagramCoreType();
 	List<Entry> findAllOfEnneagramCoreType(int type);
-	List<Entry> findAllOfEnneagramCoreType2();
 }

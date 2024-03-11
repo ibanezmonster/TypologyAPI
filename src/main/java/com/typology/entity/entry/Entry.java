@@ -5,9 +5,11 @@ import jakarta.persistence.Table;
 //import jakarta.validation.constraints.Email;
 //import javax.validation.constraints.NotBlank;
 
+import static com.typology.query.EnneagramQuery.*;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import static com.typology.namedQueries.NamedQueriesDB.*;
+import com.typology.query.EnneagramQuery;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,18 +27,19 @@ import lombok.Setter;
 @Entity
 @Table(name = "entry")
 @NamedQueries(value = {
-				@NamedQuery(name = "query_jpql", query = GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS_JPQL)
+				@NamedQuery(name = "query_jpql", query = EnneagramQuery.GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS)
 				})
 public class Entry
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	
-	@Column(name = "enneagramCoreType")
+		
+	@Column(name = "enneagram_core_type")
 	private int enneagramCoreType;
 	
-	//@JsonProperty("enneagramCoreType")
+	
+	@JsonProperty("enneagram")
 	public int getEnneagramCoreType() {
 		return enneagramCoreType;
 	}

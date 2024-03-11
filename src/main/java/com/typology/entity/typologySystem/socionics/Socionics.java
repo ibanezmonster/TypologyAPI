@@ -1,4 +1,4 @@
-package com.typology.entity.typologySystem;
+package com.typology.entity.typologySystem.socionics;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
