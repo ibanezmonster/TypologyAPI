@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.typology.entity.info.Teacher;
-import com.typology.entity.info.TypologySystem;
 import com.typology.repository.TeacherRepository;
 import com.typology.service.InfoService;
 

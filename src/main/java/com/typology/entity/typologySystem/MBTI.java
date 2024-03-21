@@ -1,4 +1,4 @@
-package com.typology.entity.typologySystem.socionics;
+package com.typology.entity.typologySystem;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Socionics
+public class MBTI
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

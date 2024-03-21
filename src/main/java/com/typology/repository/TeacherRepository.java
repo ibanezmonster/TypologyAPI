@@ -15,9 +15,7 @@ import com.typology.entity.entry.Entry;
 import com.typology.entity.info.Teacher;
 
 
-//@RepositoryRestResource//(path="entry")
 @Repository
-@Transactional
 public interface TeacherRepository extends JpaRepository<Teacher, Long>
 {
 	//@Query(value = GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS, nativeQuery = true)

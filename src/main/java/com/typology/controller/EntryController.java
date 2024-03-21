@@ -2,6 +2,7 @@ package com.typology.controller;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,51 +17,60 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.typology.entity.entry.Entry;
+import com.typology.entity.entry.Typing;
 import com.typology.entity.info.Teacher;
+import com.typology.entity.typologySystem.EnneagramTyping;
+import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.service.EntryService;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Flux;
 
-@RequestMapping("/api")
 @RestController
-@AllArgsConstructor
+@RequestMapping("/api/${api.version}/profile")
 public class EntryController
 {
 	@Autowired
 	private EntryService entryService;
 	
 	//@GetMapping("/api/entry")
-	@GetMapping("/all")
+//	@GetMapping("/all")
+//	@ResponseStatus(HttpStatus.OK)
+//	public List<Entry> getAllEntries(){
+//		return entryService.getAllEntries(); 
+//	}
+	
+	
+	//view profile's consensus typings
+	@GetMapping("/{entryName}")
 	@ResponseStatus(HttpStatus.OK)
-	public List<Entry> getAllEntries(){
-		return entryService.getAllEntries(); 
+	public Entry getEntry(@PathVariable String entryName){
+		return entryService.getEntry(entryName); 
 	}
 	
-	@GetMapping("/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Entry getEntry(@PathVariable long id){
-		return entryService.getEntry(id); 
-	}
-		
-	@PostMapping("/add_entry")
-    @ResponseStatus(HttpStatus.CREATED)
-	public Entry createEntry(@RequestBody Entry entry){
-		return entryService.createEntry(entry);
-	}	
 	
-	@PutMapping("/search_by_system/enneagram/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	public Entry updateEntry(@PathVariable long id, @RequestBody Entry entry){
-		return entryService.updateEntry(entry);
-	}
 	
-	@DeleteMapping("/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public HttpStatus deleteEntry(@PathVariable long id){
-		entryService.deleteEntry(id);
-		return HttpStatus.NO_CONTENT;
-	}
+	
+	
+	
+	
+	
+	//delete a profile
+//	@DeleteMapping("/{entry}/delete")
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	public HttpStatus deleteEntry(@PathVariable String entry){
+//		entryService.deleteEntry(entry);
+//		return HttpStatus.NO_CONTENT;
+//	}
+	
+	
+	
+//	@PutMapping("/search_by_system/enneagram/{id}")
+//	@ResponseStatus(HttpStatus.OK)
+//	public Entry updateEntry(@PathVariable long id, @RequestBody Entry entry){
+//		return entryService.updateEntry(entry);
+//	}
+	
 	
 	
 	////////tests///////////////////////
@@ -72,11 +82,11 @@ public class EntryController
 	//	}
 	
 	
-	@GetMapping("/enneagram/{type}")
-	@ResponseStatus(HttpStatus.OK)
-	public List<Entry> findAllOfEnneagramCoreType(@PathVariable int type){
-		return entryService.findAllOfEnneagramCoreType(type);
-	}
+//	@GetMapping("/enneagram/{type}")
+//	@ResponseStatus(HttpStatus.OK)
+//	public List<Entry> findAllOfEnneagramCoreType(@PathVariable int type){
+//		return entryService.findAllOfEnneagramCoreType(type);
+//	}
 	
 	
 		
