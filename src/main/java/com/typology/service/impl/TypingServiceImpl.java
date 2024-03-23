@@ -1,6 +1,7 @@
 package com.typology.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.TypologySystem;
+import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.user.Typist;
 import com.typology.exception.ExMessageBody;
@@ -33,6 +35,8 @@ import com.typology.repository.TypologySystemRepository;
 import com.typology.service.RestTemplateClass;
 import com.typology.service.TypingService;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+import jakarta.persistence.PreRemove;
 import jakarta.transaction.Transactional;
 import lombok.Data;
 
@@ -61,10 +65,24 @@ public class TypingServiceImpl implements TypingService
 	
 	
 	
+	public List<Typing> viewAllOfMyTypings(){		
+		List<Typing> typings = new ArrayList<>();
+		
+		try {
+			typings = typingRepository.viewAllOfMyTypings("Rob Zeke")
+					  				  .orElseThrow(ResourceNotFoundException::new);
+		}
+		
+		catch(ResourceNotFoundException ex) {
+			
+		}
+		
+		
+		return typings;
+	}
 	
 	
-	
-	public List<Typing> viewTyping(String entryName, String typologySystem) {
+	public TypologySystemTyping viewTyping(String entryName, String typologySystem) {
 		
 //		ResponseEntity<List<Typing>> response;
 //		ResponseEntity<Object[]> responseEntity =
@@ -95,10 +113,19 @@ public class TypingServiceImpl implements TypingService
 		
 		//run the query based on the system being used
 		//for this example, use enneagram
-		List<Typing> typings = typingRepository.findEnneagramTypingByUserAndEntryName(typistName, entryName)
-											   .orElseThrow(ResourceNotFoundException::new);
 		
-		return typings;
+		TypologySystemTyping list = null;
+		
+		switch(typologySystem) {
+		case "enneagram":
+			EnneagramTyping typing = enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typistName, entryName)
+									  								 .orElseThrow(ResourceNotFoundException::new);
+			list = typing;
+		}
+		
+		
+		
+		return list;
 		
 				
 				
@@ -131,12 +158,14 @@ public class TypingServiceImpl implements TypingService
 		ResponseEntity<String> response;
 		
 		
-		
-		try{
+		try{			
+			Typist typist = this.typistRepository.findByName("OPS")
+					 							 .orElseThrow();	//NoSuchElementException
+
 			//transaction: save in enneagram_typing table
 			switch(typologySystem) {
 				case "enneagram":
-					createEnneagramTyping(entryName, enneagramTyping);
+					createEnneagramTyping(entryName, typist, enneagramTyping);
 			}
 			
 			
@@ -145,9 +174,6 @@ public class TypingServiceImpl implements TypingService
 			Entry entry = this.entryRepository.findByName(entryName)
 											  .orElseThrow();	//NoSuchElementException
 						
-			Typist typist = this.typistRepository.findByName("OPS")
-						 						 .orElseThrow();	//NoSuchElementException
-			
 			TypologySystem typologySystemEntity = this.typologySystemRepository.findByName(typologySystem)
 																				.orElseThrow();	//NoSuchElementException
 			
@@ -196,9 +222,12 @@ public class TypingServiceImpl implements TypingService
 		//transaction: save in enneagramtyping table and typing table
 		try{
 			
+			Typist typist = this.typistRepository.findByName("OPS")
+					 							 .orElseThrow();	//NoSuchElementException
+			
 			switch(typologySystem) {
 				case "enneagram":
-					updateEnneagramTyping(entryName, enneagramTyping);
+					updateEnneagramTyping(entryName, typist, enneagramTyping);
 			}
 			
 			response = ResponseEntity.status(HttpStatus.OK)
@@ -217,47 +246,81 @@ public class TypingServiceImpl implements TypingService
 		
 		return response;
 	}
+	
+	
+	public ResponseEntity<String> deleteTyping(String entryName, String typologySystem) {
+		
+		//create switch based on type of object (typology system used)
+		//transaction: save in enneagramtyping table and typing table
+		try{
+			
+			Typist typist = this.typistRepository.findByName("OPS")
+					 							 .orElseThrow();	//NoSuchElementException
+			
+			if(!enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entryName)
+				 						 .isPresent()) 
+			{
+				return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
+		 				 			  .body(ExMessageBody.MSG_PREFIX + "Profile for: " + entryName + " not found."); 
+			}
+			
+			else{				
+				return  ResponseEntity.status(HttpStatus.NO_CONTENT)
+			 			  			  .body("Your typing for: " + entryName + " is deleted.");
+			}
+		}
+				
+		catch(Exception e){
+			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+		 			  			  .body(ExMessageBody.MSG_PREFIX + "Exception in deleting typing.");				
+		}
+	}
+
 
 	//void deleteTyping() {}
+//	private boolean isDeleted;					//implement soft delete to track whether something is deleted or not, there's a column for this also
+//	
+//	@PreRemove									//"hook" (jpa life cycle method) that fires when a row is deleted- used to set the data member isDeleted to true
+//	private void preRemove(){
+//		LOGGER.info("Setting isDeleted to True");
+//		this.isDeleted = true;
+//	}
 	
 	
-	
-	public boolean createEnneagramTyping(String entryName, EnneagramTyping enneagramTyping) throws Exception{
+	public void createEnneagramTyping(String entryName, Typist typist, EnneagramTyping enneagramTyping) throws DataIntegrityViolationException{
 		
 		//handle scenario of record already exists
-		if(enneagramTypingRepository.findEnneagramTypingByEntryName(entryName)
+		if(enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entryName)
 								 	.isPresent()) 
 		{
 			throw new DataIntegrityViolationException("Typing already exists.");
 		}
 		
 		//get entryId for fk
-		Optional<Entry> entry = Optional.of(this.entryRepository.findByName(entryName)
-																.orElseThrow(ResourceNotFoundException::new));	
-		long entryId = entry.get().getId();
-		enneagramTyping.setEntryId(entryId);
-
-		//get typistId for fk
-		enneagramTyping.setTypistId(6);
+		Entry entry = this.entryRepository.findByName(entryName)
+										  .orElseThrow(ResourceNotFoundException::new);			
+		enneagramTyping.setEntry(entry);
+		enneagramTyping.setTypist(typist);
+		
+		System.out.println(enneagramTyping.getEntry().getId());
+		System.out.println(enneagramTyping.getTypist().getId());
 				
 		//add enneagram typing table record
 		enneagramTypingRepository.save(enneagramTyping);
-		
-		return true;
 	}
 	
 	
 	
 	
 	
-	public void updateEnneagramTyping(String entryName, EnneagramTyping enneagramTyping) throws Exception{
+	public void updateEnneagramTyping(String entryName, Typist typist, EnneagramTyping enneagramTyping) throws Exception{
 
 		//get existing enneagram typing in the db for fk
-		EnneagramTyping enneagramTypingToUpdate = enneagramTypingRepository.findEnneagramTypingByEntryName(entryName)
-												  							.orElseThrow(ResourceNotFoundException::new);	
+		EnneagramTyping enneagramTypingToUpdate = enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entryName)
+												  						   .orElseThrow(ResourceNotFoundException::new);	
 
 		enneagramTypingToUpdate.setId(enneagramTypingToUpdate.getId());
-		enneagramTypingToUpdate.setTypistId(enneagramTypingToUpdate.getTypistId());
+		//enneagramTypingToUpdate.setTypistId(enneagramTypingToUpdate.getTypistId());
 		
 		enneagramTypingToUpdate.setCoreType(enneagramTyping.getCoreType());
 		enneagramTypingToUpdate.setWing(enneagramTyping.getWing());

@@ -18,12 +18,27 @@ public final class EnneagramQuery
  	""";
 	
 	
-	public static final String FIND_ENNEAGRAM_TYPING_ID_BY_ENTRY_NAME = 
+	public static final String FIND_ENNEAGRAM_TYPING_BY_ENTRY_NAME_AND_TYPIST_NAME = 
 	"""			
 		select t
 		from EnneagramTyping t		
 		join fetch Entry e
-		on t.entryId = e.id
-		where e.name = :name
+		join fetch Typist t
+		where e.name = :ename
+		and t.name = :tname
  	""";
 }
+
+
+
+
+
+
+
+
+//
+//select t
+//from EnneagramTyping t		
+//join fetch Entry e
+//on t.entryId = e.id
+//where e.name = :name

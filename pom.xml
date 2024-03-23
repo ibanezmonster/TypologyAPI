@@ -114,6 +114,12 @@
 		</dependency>
 		
 		
+		<!-- for validation-->
+		<dependency>
+		    <groupId>org.hibernate.validator</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>8.0.0.Final</version>
+		</dependency>
 		
 		
 		

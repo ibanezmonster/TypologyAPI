@@ -16,7 +16,6 @@ import com.typology.entity.entry.Typing;
 @Repository
 public interface TypingRepository extends JpaRepository<Typing, Long>
 {
-	@Query(value = FIND_USER_ENNEAGRAM_TYPING_BY_NAME)
-	Optional<List<Typing>> findEnneagramTypingByUserAndEntryName(@Param("yname") String typistName, 
-														 		@Param("ename") String entryName);
+	@Query(value = FIND_ALL_OF_USER_TYPINGS)
+	Optional<List<Typing>> viewAllOfMyTypings(@Param("yname") String typistName);
 }

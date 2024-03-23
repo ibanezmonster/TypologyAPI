@@ -115,8 +115,8 @@ foreign key (entry_id) references Entry(id));
 
 create table Enneagram_Typing
 (id int not null auto_increment primary key, 
-entry_id int not null unique,
-typist_id int not null unique,
+entry_id int not null,
+typist_id int not null,
 core_type int not null check(core_type between 1 and 9),
 wing int not null check(core_type between 1 and 9),
 tritype_ordered int,
