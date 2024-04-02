@@ -84,15 +84,15 @@ values
 
 insert into App_User(id, name, pwd, role, registration_timestamp, status)
 values
-(11111, 'admin', '123', 'ADMIN', null, 'enabled'),
+(11111, 'admin', '123abc', 'ADMIN', null, 'enabled'),
 (22222, 'noob2', '123abc', 'USER', null, 'enabled');
 
 
 
 
-insert into Authorities(authority)
+insert into Authorities(id, user_id, name)
 values
-('admin');
+(100, 11111, 'VIEWALL');
 
 
 

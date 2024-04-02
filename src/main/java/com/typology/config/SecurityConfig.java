@@ -1,12 +1,21 @@
 package com.typology.config;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,40 +25,69 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.util.UrlPathHelper;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
 import com.typology.filter.JWTTokenGeneratorFilter;
 import com.typology.filter.JWTTokenValidatorFilter;
 import com.typology.filter.RequestValidationBeforeFilter;
+import com.typology.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.typology.filter.AuthoritiesLoggingAfterFilter;
 import com.typology.filter.AuthoritiesLoggingAtFilter;
 import com.typology.filter.CsrfCookieFilter;
 
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
+	
+	 private final Logger LOG = Logger.getLogger(SecurityConfig.class.getName());
+
+	 @Bean
+	  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+	    return authConfig.getAuthenticationManager();
+	  }
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     	
-    	CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf");
+    	
+    	//csrf
+    	//CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+        //requestHandler.setCsrfRequestAttributeName("_csrf");
  	
     	//main
     	return http
-    				//session management - comment this to be able to log in
-    				//stateless says to not create jsessionids, i'll take care of everything myself
-    				//this is supposed to be used for JWT only
-    				//.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
-    				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)) //login works
+    				//normally true, by overriding to false we are giving the repsonsibility of generating the JsessionId 
+    				//and storing authentication details into the security context folder to the framework. 
+    				//Needed if using separate UI app
+    				//.securityContext((context) -> context.requireExplicitSave(false)) 
+    				
+    			
+    				//session management    				
+    						//for JWT- does not create an HttpSession or jsessionids, need to use JWT to take care of everything myself
+    				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    				
+    						//use for if using JSessionID and CSRF token
+    				//.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)) 
+    				
+    				
+    				//If our stateless API uses token-based authentication, such as JWT, we don’t need CSRF protection, and we must disable it as we saw earlier.
+    				//However, if our stateless API uses a session cookie authentication, we need to enable CSRF protection as we’ll see next.
     				
     				//CORS
     				.cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
@@ -60,45 +98,114 @@ public class SecurityConfig {
     						config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
     						config.setAllowedMethods(Collections.singletonList("*"));
     						config.setAllowCredentials(true);
-    						config.setAllowedHeaders(Collections.singletonList("*"));
-    						config.setExposedHeaders(Arrays.asList("Authorization"));
+    						config.setAllowedHeaders(Collections.singletonList("*"));	
+    						config.setExposedHeaders(Arrays.asList("Authorization"));	//passing header name to send as a response to UI app
     						config.setMaxAge(3600L);
 							return config;
     					}    					
     				}))
     			
     				
-    				//CSRF
-    				.csrf(csrf -> csrf.disable())		//also remove CsrfCookieFilter and JWTTokenValidatorFilter
-					//.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
-					//				  .ignoringRequestMatchers("/h2/**", "/register/**")
-					//				  .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+    				//CSRF- not needed if stateless, using JWT
+    				.csrf(csrf -> csrf.disable()	//also remove CsrfCookieFilter and JWTTokenValidatorFilter
+					//.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)		//ensure 
+					//				  .ignoringRequestMatchers("/h2/**", "/api/v1/register/**", "/api/v1/login")
+									  
+									  
+									  
+									  //CookieCsrfTokenRepository is intended to be used only when the client application is developed in a framework such as Angular.
+									  //It follows AngularJS conventions and stores the CsrfToken object in a cookie named XSRF-TOKEN and in the header X-XSRF-TOKEN.
+									  //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+							)
 					
+					//XSS
+//					.headers(headers ->headers.xssProtection(
+//						                        xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK))
+//											  .contentSecurityPolicy(
+//						                        cps -> cps.policyDirectives("script-src 'self'")
+//	                ))
 					
 					
 					//Filters
-					.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
-					.addFilterAt(new AuthoritiesLoggingAtFilter(),BasicAuthenticationFilter.class)	                
-					//.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)				//remove is csrf is disabled
-	                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
-	                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
-	                //.addFilterAfter(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)		//remove is csrf is disabled			
+								//login only
+					//.addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+					
+								//JWT
+					.addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+					
+								//logging					
+					//.addFilterAt(new AuthoritiesLoggingAtFilter(),BasicAuthenticationFilter.class)	           
+		            //.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)	                
+	                
+	                
+		            			//non-JWT: if using csrf
+					//.addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+		            //.addFilterBefore(new UsernameAndPasswordAuthenticationFilter(), BasicAuthenticationFilter.class)		//or .addFilterBefore(new JwtUsernameAndPasswordAuthenticationFilter(), BasicAuthenticationFilter.class)
+					//.addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)				//remove if csrf is disabled
+	               
 				    
 				    
 				    //Authorization
 				    .authorizeHttpRequests((authorizeHttpRequests) -> 	    					
-					     				      authorizeHttpRequests.requestMatchers("/h2/**", "/register/**").permitAll()
+					     				      authorizeHttpRequests.requestMatchers("/h2/**", "/api/v1/register", "/api/v1/login").permitAll()
 						   								     //.requestMatchers("/profile/**").hasRole("user")
 														     //.requestMatchers("/enneagram/**").hasRole("admin")
-					     				      				 //.requestMatchers("/enneagram/**").authenticated() 	//test for method level security
-														       .anyRequest().permitAll())
+					     				      				// .requestMatchers("/api/v1/**").authenticated() 	//test for method level security
+														      .anyRequest().permitAll()
+					     				      				 )
 				    
 				    //other
 					.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) //this allows login to h2 console
+				    //.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())	//if needed
 					//.formLogin(Customizer.withDefaults())							//default login page					
 					.formLogin(formLogin -> formLogin.loginProcessingUrl("/login")
 													 .defaultSuccessUrl("/home")
-													 .permitAll())													 
+													 .permitAll()
+													 .successHandler(new AuthenticationSuccessHandler() {
+															 @Override
+															 public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) 
+																	 throws IOException, ServletException{
+																	System.out.println("user name: " + authentication.getName());
+																	
+																	UrlPathHelper helper = new UrlPathHelper();
+																	String contextPath = helper.getContextPath(request);
+																	
+																	response.sendRedirect(contextPath);
+															}})
+													 
+													.failureHandler(new AuthenticationFailureHandler() {
+															@Override
+															public void onAuthenticationFailure(HttpServletRequest request,
+																	HttpServletResponse response,
+																	AuthenticationException exception)
+																	throws IOException, ServletException
+															{
+																System.out.println("Exception: " + exception.getMessage());
+																
+																UrlPathHelper helper = new UrlPathHelper();
+																String contextPath = helper.getContextPath(request);
+																
+																response.sendRedirect(contextPath);														
+															}})
+					)
+//					.logout(logout -> logout.permitAll()
+//											.logoutUrl("/logout")
+//											.logoutSuccessUrl("/logout_success")
+//											.logoutSuccessHandler(new LogoutSuccessHandler() {
+//												@Override
+//												public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException{
+//													LOG.info("Logout success for: " + authentication.getPrincipal());
+//													response.sendRedirect("/logout_success");
+//												}
+//											}))	
+			
+					//OAUTH2
+					//.oauth2Login(login -> login.loginPage("/login")	
+					//							.userInfoEndpoint(userService -> userService(oauth2UserService)))
+					
+					
+					//logout
+					//.logout(l -> logout.permitAll())
 					//.httpBasic(Customizer.withDefaults())							//this will make registration HTTP only, REST registration will throw 401
 					.build();
     }

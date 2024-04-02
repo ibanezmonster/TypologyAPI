@@ -1,4 +1,4 @@
-//package com.typology.config;
+//package com.typology.user;
 //
 //
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -24,22 +24,31 @@
 //
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        String userName, password;
-//        List<GrantedAuthority> authorities;
-//        List<AppUser> customer = appUserRepository.findByName(userName);
 //        
-//        if (customer.size() == 0) {
-//            throw new UsernameNotFoundException("User details not found for the user : " + username);
-//        } 
+//
+//		try {
+//			String userName = null, password = null;
+//	        List<GrantedAuthority> authorities;
+//	        AppUser customer;
+//	        
+//			customer = appUserRepository.findByName(userName)
+//										.orElseThrow(Exception::new);
+//
+//	        userName = customer.getName();
+//	        password = customer.getPwd();
+//	        authorities = new ArrayList<>();
+//	        authorities.add(new SimpleGrantedAuthority(customer.getRole()));
+//	        
+//
+//	        return UserDetailsImpl.build(user);
+//		}
+//		catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//       
+//    
 //        
-//        else{
-//            userName = customer.get(0).getName();
-//            password = customer.get(0).getPwd();
-//            authorities = new ArrayList<>();
-//            authorities.add(new SimpleGrantedAuthority(customer.get(0).getRole()));
-//        }
-//        
-//        return new User(userName,password,authorities);
 //    }
 //
 //}

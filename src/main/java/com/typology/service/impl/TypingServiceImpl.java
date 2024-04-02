@@ -248,7 +248,7 @@ public class TypingServiceImpl implements TypingService
 	}
 	
 	
-	public ResponseEntity<String> deleteTyping(String entryName, String typologySystem) {
+	public ResponseEntity<HttpStatus> deleteTyping(String entryName, String typologySystem) {
 		
 		//create switch based on type of object (typology system used)
 		//transaction: save in enneagramtyping table and typing table
@@ -260,19 +260,16 @@ public class TypingServiceImpl implements TypingService
 			if(!enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entryName)
 				 						 .isPresent()) 
 			{
-				return  ResponseEntity.status(HttpStatus.BAD_REQUEST)
-		 				 			  .body(ExMessageBody.MSG_PREFIX + "Profile for: " + entryName + " not found."); 
+				return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST); 
 			}
 			
 			else{				
-				return  ResponseEntity.status(HttpStatus.NO_CONTENT)
-			 			  			  .body("Your typing for: " + entryName + " is deleted.");
+				return new ResponseEntity<HttpStatus>(HttpStatus.NO_CONTENT);
 			}
 		}
 				
 		catch(Exception e){
-			return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-		 			  			  .body(ExMessageBody.MSG_PREFIX + "Exception in deleting typing.");				
+			return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);				
 		}
 	}
 

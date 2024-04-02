@@ -17,5 +17,5 @@ public interface TypingService
 	TypologySystemTyping viewTyping(String entryName, String typologySystem);
 	ResponseEntity<String> addTyping(String entryName, String typologySystem, EnneagramTyping enneagramTyping);
 	ResponseEntity<String> updateTyping(String entryName, String typologySystem, EnneagramTyping enneagramTyping);
-	ResponseEntity<String> deleteTyping(String entryName, String typologySystem);
+	ResponseEntity<HttpStatus> deleteTyping(String entryName, String typologySystem);
 }

@@ -14,8 +14,8 @@ public class Authority {
 
     private String name;
 
-    @ManyToOne							//establishes link between Customer and Authorities
-    @JoinColumn(name = "customer_id")	//column that joins the two tables
+    @ManyToOne(fetch=FetchType.EAGER)							
+    @JoinColumn(name = "user_id")		
     private AppUser appUser;
 
     public Long getId() {

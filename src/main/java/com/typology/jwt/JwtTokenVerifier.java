@@ -40,6 +40,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
+        
+        
+        System.out.println("Received header: " + authorizationHeader);
 
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
             filterChain.doFilter(request, response);
@@ -61,11 +64,10 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             var authorities = (List<Map<String, String>>) body.get("authorities");
 
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
-                    .map(m -> new SimpleGrantedAuthority(m.get("authority")))
-                    .collect(Collectors.toSet());
+														                      .map(m -> new SimpleGrantedAuthority(m.get("authority")))
+														                      .collect(Collectors.toSet());
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    username,
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username,
                     null,
                     simpleGrantedAuthorities
             );

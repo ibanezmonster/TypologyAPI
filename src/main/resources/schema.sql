@@ -48,7 +48,10 @@ status varchar(50) not null);
 
 create table Authorities
 (id int not null auto_increment primary key,
-authority varchar(50) not null);
+user_id int not null,
+name varchar(50) not null,
+foreign key (user_id) references App_User(id)
+);
 
 create table Typology_System
 (id int not null auto_increment primary key, 

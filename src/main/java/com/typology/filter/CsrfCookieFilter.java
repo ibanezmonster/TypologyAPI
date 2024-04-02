@@ -20,13 +20,14 @@ public class CsrfCookieFilter extends OncePerRequestFilter {	//once per request 
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException 
     {    
+    	System.out.println("In CsrfCookieFilter");
     	CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         
         if(null != csrfToken.getHeaderName()){
             response.setHeader(csrfToken.getHeaderName(), csrfToken.getToken());
         }
         
-        LOG.info("CSRF info: " + csrfToken.getHeaderName());
+        LOG.info("CSRF info: " + csrfToken.getHeaderName() + ", " + csrfToken.getParameterName() + ", " + csrfToken.getToken());
         
         filterChain.doFilter(request, response);
     }

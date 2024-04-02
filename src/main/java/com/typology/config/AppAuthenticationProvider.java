@@ -12,10 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.typology.entity.user.AppUser;
+import com.typology.entity.user.Authority;
 import com.typology.repository.AppUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class AppAuthenticationProvider implements AuthenticationProvider
@@ -36,6 +38,8 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 		AppUser customer = appUserRepository.findByName(username)
 											.orElseThrow(IllegalArgumentException::new);
 		List<GrantedAuthority> authorities = null;
+		
+		System.out.println("In AppAuthentication Providerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
 
 		try {
 
@@ -47,6 +51,14 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 			else {
 				throw new BadCredentialsException("Invalid password!");
 			}
+			
+//			if(passwordEncoder.matches(pwd, customer.getPwd())) {
+//				return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities());
+//			}
+//
+//			else {
+//				throw new BadCredentialsException("Invalid password!");
+//			}
 
 		}
 
@@ -61,6 +73,17 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 	public boolean supports(Class<?> authentication)
 	{
 		return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+	}
+	
+	
+	private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities){
+		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+		
+		for(Authority authority:authorities) {
+			grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+		}
+		
+		return grantedAuthorities;
 	}
 
 }

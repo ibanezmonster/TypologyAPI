@@ -14,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.typology.constants.SecurityConstants;
+import com.typology.jwt.JwtSecurityConstants;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.IOException;
@@ -34,8 +34,12 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter
 	{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
+		System.out.println("If nothing past here, auth is null");
+		//System.out.println(authentication.getName());
+		
+		
 		if(null != authentication) {
-			SecretKey key = Keys.hmacShaKeyFor(SecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+			SecretKey key = Keys.hmacShaKeyFor(JwtSecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
 			
 			String jwt = Jwts.builder()
 							.setIssuer("Typology API")
@@ -49,7 +53,7 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter
 			
 			LOG.info("JWT generated: " + jwt.toString());
 			
-			response.setHeader(SecurityConstants.JWT_HEADER, jwt);
+			response.setHeader(JwtSecurityConstants.JWT_HEADER, jwt);
 		}
 		
 		filterChain.doFilter(request, response);
@@ -60,7 +64,7 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter
 	//the point of this is to only generate the JSON Web Token upon login
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return !request.getServletPath().equals("/home");		//if current request is not /user, value will become true, meaning it should not filter. But for /user, it's executed
+		return !request.getServletPath().equals("/api/v1/login");  
 	}
 	
 	

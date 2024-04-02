@@ -3,6 +3,7 @@ package com.typology.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ public class AdminController
 	private AdminService adminService;	
 	
 	@PatchMapping("/update_user/{name}/role")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<String> editUserRole(@PathVariable String name, @RequestBody AppUser appUser)
 	{	
 		return adminService.editUserRole(name, appUser);
@@ -28,6 +30,7 @@ public class AdminController
 	
 	
 	@PatchMapping("/update_user/{name}/status")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<String> editUserStatus(@PathVariable String name, @RequestBody AppUser appUser)
 	{	
 		return adminService.editUserStatus(name, appUser);

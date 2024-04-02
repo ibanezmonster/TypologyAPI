@@ -1,27 +1,55 @@
 package com.typology.filter;
 
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.typology.config.AppAuthenticationProvider;
 
 import java.io.IOException;
 import java.util.logging.Logger;
 
-public class AuthoritiesLoggingAfterFilter implements Filter {
+public class AuthoritiesLoggingAfterFilter extends OncePerRequestFilter{//implements Filter {
 
     private final Logger LOG =
             Logger.getLogger(AuthoritiesLoggingAfterFilter.class.getName());
+    
+    
+
+	@Autowired
+	private AppAuthenticationProvider authentication;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	//get current user details- once user is authenticated it will be stored inside the security context
-        if (null != authentication) {
-            LOG.info("User " + authentication.getName() + " is successfully authenticated and "
-                    + "has the authorities " + authentication.getAuthorities().toString());
-        }
+    	System.out.println("AuthoritiesLoggingAfterFilter reached");
+    	
+//		Authentication authObj;
+//
+//		authObj = authentication.authenticate(new UsernamePasswordAuthenticationToken("noob3", "123abc"));
+//		SecurityContextHolder.getContext().setAuthentication(authObj);
+//				
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();	//get current user details- once user is authenticated it will be stored inside the security context
+//        
+//        if (null != authentication) {
+//            LOG.info("User " + authentication.getName() + " is successfully authenticated and " + "has the authorities " + authentication.getAuthorities().toString());
+//        }
+        
         chain.doFilter(request, response);
     }
+    
+    
+    //skip this on registration
+    @Override
+	protected boolean shouldNotFilter(HttpServletRequest request) {
+		return !request.getServletPath().equals("/api/v1/register"); 
+	}
 
 }
