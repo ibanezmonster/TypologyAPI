@@ -1,4 +1,4 @@
-package com.typology.jwt;
+package com.typology.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -21,6 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
+import com.typology.config.EnvironmentProperties;
 import com.typology.entity.user.AppUser;
 import com.typology.user.UserDetailsImpl;
 
@@ -29,22 +30,13 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-public class JwtUtils
+public class JWT
 {
-	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
-	@Value("${application.jwt.secretKey}")
-	private String jwtSecret;
-
-	@Value("${application.jwt.tokenExpirationAfterDays}")
-	private int jwtExpirationMs;
-
-	@Value("${application.jwt.tokenPrefix}")
-	private String jwtCookie;
+	private static final Logger logger = LoggerFactory.getLogger(JWT.class);
 
 	public String getJwtFromCookies(HttpServletRequest request)
 	{
-		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+		Cookie cookie = WebUtils.getCookie(request, EnvironmentProperties.getJWTTokenPrefix());
 
 		if(cookie != null) {
 			return cookie.getValue();
@@ -55,11 +47,11 @@ public class JwtUtils
 
 	}
 
-	public ResponseCookie generateJwtCookie(UserDetailsImpl u)
+	public ResponseCookie generateJwtCookie(UserDetailsImpl user)
 	{
-		String jwt = generateTokenFromUsername(u.getUsername(), u.getAuthorities());
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt)
-											  .path("/api/v1/login")
+		String jwt = generateTokenFromUsername(user.getUsername(), user.getAuthorities());
+		ResponseCookie cookie = ResponseCookie.from(EnvironmentProperties.getJWTTokenPrefix(), jwt)
+											  .path("/api/" + EnvironmentProperties.getApiVersion() + "/login")
 											  .maxAge(24 * 60 * 60)
 											  .httpOnly(true)
 											  .build();
@@ -68,25 +60,18 @@ public class JwtUtils
 	
 	public String generateTokenFromUsername(String userName, Collection<? extends GrantedAuthority> authorities)
 	{
-		SecretKey key = Keys.hmacShaKeyFor(JwtSecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8));
+		SecretKey key = Keys.hmacShaKeyFor(EnvironmentProperties.getJWTSecretKey().getBytes(StandardCharsets.UTF_8));
 
-		//System.out.println("Here's the null authorities: " + populateAuthorities(authorities));
-		
 		return Jwts.builder()
 					.setIssuer("Typology API")
 					.setSubject("JWT Token")
 					.claim("username", userName)
 					.claim("authorities", populateAuthorities(authorities))
+					//.claim("role", role)
 					.setIssuedAt(new Date())
 					.setExpiration(new Date((new Date()).getTime() + 30000000))		//expiration time of 8 hours
 					.signWith(key)													//digitally sign by using secret key
 					.compact();	
-//		
-//		return Jwts.builder()
-//					.setSubject(username)
-//					.setIssuedAt(new Date())
-//					.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-//					.signWith(key(), SignatureAlgorithm.HS256).compact();
 	}
 	
 	
@@ -106,8 +91,8 @@ public class JwtUtils
 
 	public ResponseCookie getCleanJwtCookie()
 	{
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
-											  .path("/api/v1/login")
+		ResponseCookie cookie = ResponseCookie.from(EnvironmentProperties.getJWTTokenPrefix(), null)
+											  .path("/api/" + EnvironmentProperties.getApiVersion() + "/login")
 											  .build();
 		return cookie;
 	}
@@ -124,7 +109,7 @@ public class JwtUtils
 
 	private Key key()
 	{
-		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(EnvironmentProperties.getJWTSecretKey()));
 	}
 	
 	

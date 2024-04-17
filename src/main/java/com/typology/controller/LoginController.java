@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer.AuthorizationManagerRequestMatcherRegistry;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.config.AppAuthenticationProvider;
 import com.typology.config.SecurityConfig;
+import com.typology.dto.LoginDTO;
+//import com.typology.dto.Mapper;
 import com.typology.entity.user.AppUser;
-import com.typology.jwt.JwtSecurityConstants;
-import com.typology.jwt.JwtUtils;
+import com.typology.security.JWT;
 import com.typology.service.AppUserService;
 import com.typology.user.UserDetailsImpl;
 
@@ -45,13 +48,9 @@ public class LoginController
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
-	
-	//@Autowired
-	//private JWTTokenUtil jwtTokenUtil;
-	
+
 	@Autowired
-	private JwtUtils jwtUtils;
+	private JWT jwt;
 
 	private final Logger LOG = Logger.getLogger(SecurityConfig.class.getName());
 
@@ -59,24 +58,35 @@ public class LoginController
 	@Autowired
 	private AppUserService appUserService; 
 	
-	
-	//@Autowired
-	//private AppUser appUserForAuthoritiesLookup;
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	//@Order
 	@PostMapping(path = "/login", 
 				 consumes = {MediaType.APPLICATION_JSON_VALUE}, 
 				 produces = {MediaType.APPLICATION_JSON_VALUE}) 
-	public ResponseEntity<?> login(@Valid @RequestBody AppUser appUser){
+	public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO){
 		
+		AppUser appUser;
 		Authentication authObj;
+		
+		try {
+			appUser = modelMapper.map(loginDTO, AppUser.class);
+		}
+		
+		catch(Exception e) {
+			LOG.severe("Unable to convert LoginDTO to AppUser");
+			return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 		try {
 			
 			//set the user as an Authentication object in the SecurityContextHolder
-			authObj = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getName(), appUser.getPwd()));
+			authObj = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getName(), appUser.getPwd()));			
+			System.out.println("????????????????????" + authObj.isAuthenticated());
 			
 			SecurityContextHolder.getContext().setAuthentication(authObj);
+			System.out.println(authObj.getAuthorities());
 			LOG.info("Placed in security context holder: " + SecurityContextHolder.getContext().getAuthentication().toString());				
 			
 			
@@ -85,13 +95,13 @@ public class LoginController
 			LOG.info("Looking up: " + appUserForAuthoritiesLookup.getId() + ", authorities are: " + appUserForAuthoritiesLookup.getAuthorities().toString());
 			
 			UserDetailsImpl userDetails = UserDetailsImpl.build(appUserForAuthoritiesLookup);
-			ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+			ResponseCookie jwtCookie = jwt.generateJwtCookie(userDetails);
 		    
 		    //response.setHeader(JwtSecurityConstants.JWT_HEADER, jwtCookie.toString());
-		    
+					    
 			return ResponseEntity.ok()
 								 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-								 .header(JwtSecurityConstants.JWT_HEADER, jwtCookie.toString())
+								 .header(HttpHeaders.AUTHORIZATION, jwtCookie.toString())
 								 .body("Successful login");
 		}
 		

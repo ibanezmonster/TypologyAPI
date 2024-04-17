@@ -11,6 +11,7 @@ public interface EntryService
 	//basic queries
 
 	Entry getEntry(String name);
+	Entry saveEntry(Entry entry);
 	//List<Entry> getAllEntries();
 	//void deleteEntry(long id);
 	

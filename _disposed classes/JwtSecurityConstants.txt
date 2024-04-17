@@ -1,0 +1,17 @@
+package com.typology.jwt;
+
+import org.springframework.beans.factory.annotation.Value;
+
+public abstract class JwtSecurityConstants {
+
+//	@Value("${application.jwt.secretKey}")
+//	public static String JWT_KEY;	 
+
+//	@Value("${application.jwt.tokenExpirationAfterDays}")
+//	public static int jwtExpirationMs;
+
+//	@Value("${application.jwt.tokenPrefix}")
+//	public static String jwtCookie;
+
+	//public static final String JWT_HEADER = "Authorization";
+}

@@ -13,7 +13,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public interface TypingService
 {
-	List<Typing> viewAllOfMyTypings();		
+	List<Typing> viewAllOfMyTypings();			
 	TypologySystemTyping viewTyping(String entryName, String typologySystem);
 	ResponseEntity<String> addTyping(String entryName, String typologySystem, EnneagramTyping enneagramTyping);
 	ResponseEntity<String> updateTyping(String entryName, String typologySystem, EnneagramTyping enneagramTyping);

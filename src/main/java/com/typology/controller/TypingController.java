@@ -51,12 +51,13 @@ public class TypingController
 	}
 	
 	
-	//add your typing for an entry, using one typology system
+	//update your typing for an entry, using one typology system
 	@PatchMapping("/{entryName}/vote/{typologySystem}")
 	public ResponseEntity<String> updateTyping(@PathVariable String entryName, @PathVariable String typologySystem, @RequestBody EnneagramTyping enneagramTyping){		
 		return typingService.updateTyping(entryName, typologySystem, enneagramTyping);
 	}
 	
+	//delete your typing
 	@DeleteMapping(path="/{entryName}/my_typing/{typologySystem}")
 	public ResponseEntity<HttpStatus> deleteTyping(@PathVariable String entryName, @PathVariable String typologySystem) {
 		return typingService.deleteTyping(entryName, typologySystem);

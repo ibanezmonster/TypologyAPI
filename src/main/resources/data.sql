@@ -84,7 +84,7 @@ values
 
 insert into App_User(id, name, pwd, role, registration_timestamp, status)
 values
-(11111, 'admin', '123abc', 'ADMIN', null, 'enabled'),
+(11111, 'admin', '$2a$12$tUBnvhyVdrNdXs3VgTgsgeVohbm0dRF69XoXn2hn7o3eI0gDSg2tC', 'ADMIN', null, 'enabled'),
 (22222, 'noob2', '123abc', 'USER', null, 'enabled');
 
 
@@ -92,7 +92,8 @@ values
 
 insert into Authorities(id, user_id, name)
 values
-(100, 11111, 'VIEWALL');
+(100, 11111, 'VIEWALL'),
+(101, 11111, 'ROLE_ADMIN');
 
 
 

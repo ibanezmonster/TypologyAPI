@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.typology.config.AppAuthenticationProvider;
+import com.typology.config.EnvironmentProperties;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -18,9 +21,7 @@ import java.util.logging.Logger;
 public class AuthoritiesLoggingAfterFilter extends OncePerRequestFilter{//implements Filter {
 
     private final Logger LOG =
-            Logger.getLogger(AuthoritiesLoggingAfterFilter.class.getName());
-    
-    
+            Logger.getLogger(AuthoritiesLoggingAfterFilter.class.getName());   
 
 	@Autowired
 	private AppAuthenticationProvider authentication;
@@ -49,7 +50,7 @@ public class AuthoritiesLoggingAfterFilter extends OncePerRequestFilter{//implem
     //skip this on registration
     @Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return !request.getServletPath().equals("/api/v1/register"); 
+		return !request.getServletPath().equals("/api/" + EnvironmentProperties.getApiVersion() + "/register"); 
 	}
 
 }

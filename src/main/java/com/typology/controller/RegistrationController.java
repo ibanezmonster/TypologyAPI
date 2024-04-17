@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.typology.config.SecurityConfig;
+import com.typology.dto.RegistrationDTO;
 import com.typology.entity.user.AppUser;
 import com.typology.entity.user.Authority;
 import com.typology.repository.AppUserRepository;
@@ -41,25 +43,36 @@ public class RegistrationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+	private ModelMapper modelMapper;
     
 	private final Logger LOG = Logger.getLogger(SecurityConfig.class.getName());
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody AppUser appUser) {
-        AppUser savedCustomer = null;
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
+        AppUser savedCustomer;
         ResponseEntity<String> response = null;
         
         try {
+        	savedCustomer = modelMapper.map(registrationDTO, AppUser.class);
+		}
+		
+		catch(Exception e) {
+			LOG.severe("Unable to convert Registration to AppUser");
+			return new ResponseEntity<HttpStatus>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+        
+        try {
         	//save user
-        	String hashedPwd = passwordEncoder.encode(appUser.getPwd());
+        	String hashedPwd = passwordEncoder.encode(savedCustomer.getPwd());
         	
-        	appUser.setPwd(hashedPwd);
-        	appUser.setRole(AppUserRoles.USER.toString());
-        	appUser.setRegistrationTimestamp(ZonedDateTime.now());
-        	appUser.setStatus("enabled");
+        	savedCustomer.setPwd(hashedPwd);
+        	savedCustomer.setRole(AppUserRoles.USER.toString());
+        	savedCustomer.setRegistrationTimestamp(ZonedDateTime.now());
+        	savedCustomer.setStatus("enabled");
             
-        	savedCustomer = appUserRepository.save(appUser);
+        	savedCustomer = appUserRepository.save(savedCustomer);
         	
         	//save authorities
         	//by default, give new user the 'VIEWTYPINGS' authority

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.user.Typist;
 import com.typology.exception.ExMessageBody;
+import com.typology.filter.AuthoritiesLoggingAfterFilter;
 import com.typology.repository.EnneagramTypingRepository;
 import com.typology.repository.EntryRepository;
 import com.typology.repository.TypingRepository;
@@ -63,7 +65,7 @@ public class TypingServiceImpl implements TypingService
 	@Autowired
 	private RestTemplateClass restTemplate;
 	
-	
+	private final Logger LOG = Logger.getLogger(TypingServiceImpl.class.getName()); 
 	
 	public List<Typing> viewAllOfMyTypings(){		
 		List<Typing> typings = new ArrayList<>();
@@ -74,11 +76,18 @@ public class TypingServiceImpl implements TypingService
 		}
 		
 		catch(ResourceNotFoundException ex) {
-			
+			LOG.warning("Typings not found");
 		}
 		
 		
 		return typings;
+	}
+	
+	
+	
+	public Typing saveTyping(Typing typing) {	
+		Typing savedTyping = typingRepository.save(typing);
+		return savedTyping;
 	}
 	
 	

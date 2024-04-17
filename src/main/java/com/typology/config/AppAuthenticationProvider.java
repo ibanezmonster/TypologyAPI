@@ -37,10 +37,9 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 		String pwd = authentication.getCredentials().toString();
 		AppUser customer = appUserRepository.findByName(username)
 											.orElseThrow(IllegalArgumentException::new);
+		
 		List<GrantedAuthority> authorities = null;
 		
-		System.out.println("In AppAuthentication Providerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-
 		try {
 
 			if(passwordEncoder.matches(pwd, customer.getPwd())) {
@@ -51,15 +50,6 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 			else {
 				throw new BadCredentialsException("Invalid password!");
 			}
-			
-//			if(passwordEncoder.matches(pwd, customer.getPwd())) {
-//				return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities());
-//			}
-//
-//			else {
-//				throw new BadCredentialsException("Invalid password!");
-//			}
-
 		}
 
 		catch (BadCredentialsException ex) {

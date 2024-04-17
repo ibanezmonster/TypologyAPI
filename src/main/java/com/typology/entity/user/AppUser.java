@@ -8,6 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.typology.security.ValidPassword;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import jakarta.persistence.Column;
@@ -20,15 +21,30 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "app_user")
 public class AppUser
 {
+//	public AppUser(long id, String name, String pwd, String role, ZonedDateTime registrationTimestamp, String status){
+//		this.id = id;
+//		this.name = name;
+//		this.pwd = pwd;
+//		this.role = role;
+//		this.registrationTimestamp = registrationTimestamp;
+//		this.status = status;
+//	}
+	
 	@Id	
 	@GeneratedValue(strategy=GenerationType.AUTO)		//throws error if data.sql adds new users that start at 1
 	private long id;
@@ -39,14 +55,8 @@ public class AppUser
 	
 	@NotBlank
 	@JsonProperty(access = Access.WRITE_ONLY)
-	//@Size(min=6, max=15, message="Size must be between 6 and 15 characters")			//@Size is more portable than Hibernate @Length
 	private String pwd;
-	
-	
-	//only admin can update a user's role
-	//@JsonView(View.Admin.class)
 	private String role;
-	
 	
 	//@JsonIgnore
     @OneToMany(mappedBy="appUser",fetch=FetchType.EAGER)

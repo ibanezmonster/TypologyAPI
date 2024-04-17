@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.typology.entity.user.AppUser;
+
+import lombok.NoArgsConstructor;
+
 import static com.typology.query.AppUserQuery.*;
 
 

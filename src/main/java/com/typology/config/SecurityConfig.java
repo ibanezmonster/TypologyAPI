@@ -4,11 +4,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,19 +40,15 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
-import com.typology.filter.JWTTokenGeneratorFilter;
 import com.typology.filter.JWTTokenValidatorFilter;
 import com.typology.filter.RequestValidationBeforeFilter;
-import com.typology.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.typology.filter.AuthoritiesLoggingAfterFilter;
-import com.typology.filter.AuthoritiesLoggingAtFilter;
 import com.typology.filter.CsrfCookieFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Logger;
-
 
 @Configuration
 @EnableMethodSecurity
@@ -109,7 +108,8 @@ public class SecurityConfig {
     				//CSRF- not needed if stateless, using JWT
     				.csrf(csrf -> csrf.disable()	//also remove CsrfCookieFilter and JWTTokenValidatorFilter
 					//.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)		//ensure 
-					//				  .ignoringRequestMatchers("/h2/**", "/api/v1/register/**", "/api/v1/login")
+					//				  .ignoringRequestMatchers("/h2/**", "/api/" + EnvironmentProperties.getApiVersion() + "/register/**", 
+    				//													"/api/" + EnvironmentProperties.getApiVersion() + "/login")
 									  
 									  
 									  
@@ -135,7 +135,7 @@ public class SecurityConfig {
 					
 								//logging					
 					//.addFilterAt(new AuthoritiesLoggingAtFilter(),BasicAuthenticationFilter.class)	           
-		            //.addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)	                
+		            .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)	                
 	                
 	                
 		            			//non-JWT: if using csrf
@@ -147,11 +147,14 @@ public class SecurityConfig {
 				    
 				    //Authorization
 				    .authorizeHttpRequests((authorizeHttpRequests) -> 	    					
-					     				      authorizeHttpRequests.requestMatchers("/h2/**", "/api/v1/register", "/api/v1/login").permitAll()
-						   								     //.requestMatchers("/profile/**").hasRole("user")
-														     //.requestMatchers("/enneagram/**").hasRole("admin")
-					     				      				// .requestMatchers("/api/v1/**").authenticated() 	//test for method level security
-														      .anyRequest().permitAll()
+					     				      authorizeHttpRequests.requestMatchers("/api/" + EnvironmentProperties.getApiVersion() + "/register", 
+					     				    		  								"/api/" + EnvironmentProperties.getApiVersion() + "/login")
+					     				      										.permitAll()
+					     				      										
+					     				      					   .requestMatchers("/console/**").hasRole("ADMIN")	//cannot use 'admin' in path name, it won't work							     				      										
+					     				      				  	   .requestMatchers("/h2/**").permitAll()					     				      				  	   
+					     				      				  	   .anyRequest().authenticated()		
+					     				      				  	   //.anyRequest().permitAll()
 					     				      				 )
 				    
 				    //other
@@ -188,6 +191,15 @@ public class SecurityConfig {
 																response.sendRedirect(contextPath);														
 															}})
 					)
+					
+					//logout not necessary for API
+					//but for UI, can just remove token from browser
+					
+					//consider access token and refresh token solution
+					//can blacklist refresh token
+					
+					//look into jwks
+					
 //					.logout(logout -> logout.permitAll()
 //											.logoutUrl("/logout")
 //											.logoutSuccessUrl("/logout_success")
@@ -232,6 +244,16 @@ public class SecurityConfig {
     	//return NoOpPasswordEncoder.getInstance(); //only used for non-prod
         return new BCryptPasswordEncoder();
     }
+    
+    
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//            .inMemoryAuthentication()
+////                .withUser("user").password("{noop}password").roles("USER")
+////            .and()
+//                .withUser("admin").roles("ADMIN");
+//    }
 }
 
 

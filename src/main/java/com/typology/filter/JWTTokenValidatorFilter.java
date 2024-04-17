@@ -8,14 +8,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.typology.jwt.JwtSecurityConstants;
+import com.typology.config.EnvironmentProperties;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -35,23 +38,21 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException
 	{
-		System.out.println("In JWTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-		
-		
 		// trying to fetch the jwt token that my client application is sending in the request
-		String jwt = request.getHeader(JwtSecurityConstants.JWT_HEADER); 
+		String jwt = request.getHeader(HttpHeaders.AUTHORIZATION); 
 		
-		System.out.println("JWT issssssssssssssssssssss " + jwt);
-
+		//eliminate 'Bearer' prefix
+		if(StringUtils.hasText(jwt) && jwt.startsWith("Bearer ")) {
+			jwt = jwt.substring(7, jwt.length());
+		}
+		
 		// you can set a breakpoint here and set the value of jwt to simulate token  tampering
 		// if you do that, it will end up in catch block
 		if (null != jwt)
 		{
-			System.out.println("not null! JWT issssssssssssssssssssss " + jwt);
-
 			try
 			{
-				SecretKey key = Keys.hmacShaKeyFor(JwtSecurityConstants.JWT_KEY.getBytes(StandardCharsets.UTF_8)); // same  as in validation process
+				SecretKey key = Keys.hmacShaKeyFor(EnvironmentProperties.getJWTSecretKey().getBytes(StandardCharsets.UTF_8)); // same  as in validation process
 
 				Claims claims = Jwts.parserBuilder()
 									.setSigningKey(key)
@@ -61,6 +62,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 												
 				// using claims, fetch username, authorities to create UsernamePasswordAuthenticationToken
 				String username = String.valueOf(claims.get("username"));
+				//String role = (String) claims.get("role");
 				String authorities = (String) claims.get("authorities");
 
 				// at this point, telling spring authentication is successful
@@ -68,9 +70,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 
 				// so store the auth in securitycontextholder
 				SecurityContextHolder.getContext().setAuthentication(auth);
-				
-				
-				System.out.println("It was read correctly!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							
 				LOG.info("Token Validator. Authorities: " + authorities);
 			}
 			
@@ -84,6 +84,12 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 				throw new BadCredentialsException("Invalid Token received!" + e.getClass().getName());
 			}
 		}
+		
+		
+		else {
+			throw new BadCredentialsException("JWT is missing!");
+		}
+		
 
 		filterChain.doFilter(request, response);
 	}
@@ -93,10 +99,12 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 	protected boolean shouldNotFilter(HttpServletRequest request)
 	{
 		String path = request.getServletPath();
-		List<String> doNotFilterList = Arrays.asList("/api/v1/register", "/api/v1/login");
-		
+		List<String> doNotFilterList = Arrays.asList("/api/" + EnvironmentProperties.getApiVersion() + "/register", 
+													"/api/" + EnvironmentProperties.getApiVersion() + "/login",
+													"/admin",
+													"/h2");
 		return doNotFilterList.stream()
-							  .anyMatch(n -> n.equals(path));
+							  .anyMatch(n -> path.startsWith(n));
 	}
 
 }

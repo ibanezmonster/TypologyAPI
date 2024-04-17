@@ -20,6 +20,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,6 +30,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@Builder
 @EqualsAndHashCode(callSuper=false)
 @Table(name="enneagramTyping")
 public final class EnneagramTyping extends TypologySystemTyping

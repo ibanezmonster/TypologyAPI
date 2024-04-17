@@ -28,7 +28,8 @@ import org.slf4j.LoggerFactory;
 @Transactional
 public class AdminServiceImpl implements AdminService
 {
-	 private final static Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
+	
 	@Autowired
 	private AppUserRepository appUserRepository;
 	
