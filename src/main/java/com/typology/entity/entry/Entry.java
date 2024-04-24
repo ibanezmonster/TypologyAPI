@@ -38,8 +38,10 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SecondaryTable;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+//@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "entry")
@@ -59,11 +61,11 @@ public class Entry
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name="enneagram_typing_consensus_id", referencedColumnName = "id")
-	private EnneagramTypingConsensus enneagramTypingConsensus;
-
-	
-	@OneToMany(mappedBy="entry", fetch = FetchType.LAZY)
-	private List<Typing> typings = new ArrayList<>();
+//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//	@JoinColumn(name="enneagram_typing_consensus_id", referencedColumnName = "id")
+//	private EnneagramTypingConsensus enneagramTypingConsensus;
+//
+//	
+//	@OneToMany(mappedBy="entry", fetch = FetchType.LAZY)
+//	private List<Typing> typings = new ArrayList<>();
 }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.entity.TestEntity;
@@ -45,7 +43,6 @@ import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.entity.user.AppUser;
 import com.typology.entity.user.Typist;
-import com.typology.integration.ContainerStartup;
 import com.typology.service.AppUserService;
 import com.typology.service.EnneagramTypingConsensusService;
 import com.typology.service.EntryService;
@@ -75,9 +72,9 @@ import static org.mockito.BDDMockito.willDoNothing;
 //@RunWith(SpringRunner.class)
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) 
+@SpringBootTest 
 @AutoConfigureMockMvc(addFilters = false)	//disabling security
-public class ControllerTests extends ContainerStartup
+public class ControllerITests
 {
 	@Autowired
     private MockMvc mockMvc;		//needed to call REST APIs
@@ -108,32 +105,11 @@ public class ControllerTests extends ContainerStartup
 	private TestService testService;
     
     
-  
-	//static MSSQLServerContainer mssqlserver;
-	
-	
-    @Test
-    @WithMockUser(username = "admin", password = "abc123", roles = {"ADMIN"})
-    public void testdb() throws Exception{
-    	assertThat(1).isEqualTo(1);
-    }
-	
+    
     
     @Test
     @WithMockUser(username = "admin", password = "abc123", roles = {"ADMIN"})
     public void givenTestObject_whenCreateTest_thenReturnSavedTest() throws Exception{
-    	
-    	
-    	
-    	//@Rule
-    	//mssqlserver = new MSSQLServerContainer().acceptLicense();
-
-//    	    @Test
-//    	    public void someTestMethod() {
-//    	        String url = mssqlserver.getJdbcUrl();
-    	
-    	
-    	
 
     	//need: enneagram typing-> typist, entry -> enneagramTypingConsensus
     	
