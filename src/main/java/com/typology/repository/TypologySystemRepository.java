@@ -13,7 +13,7 @@ import com.typology.entity.user.Typist;
 import static com.typology.query.TypologySystemQuery.*;
 
 @Repository
-public interface TypologySystemRepository extends JpaRepository<Typist, Long>
+public interface TypologySystemRepository extends JpaRepository<TypologySystem, Long>
 {
 	@Query(value = FIND_TYPOLOGY_SYSTEM_BY_NAME)
 	Optional<TypologySystem> findByName(@Param("name") String name);			

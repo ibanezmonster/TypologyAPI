@@ -45,8 +45,9 @@ public class AppUser
 //		this.status = status;
 //	}
 	
+	
 	@Id	
-	@GeneratedValue(strategy=GenerationType.AUTO)		//throws error if data.sql adds new users that start at 1
+	@GeneratedValue(strategy=GenerationType.IDENTITY)		
 	private long id;
 	
 	@NotBlank

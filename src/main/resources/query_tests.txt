@@ -1,3 +1,0 @@
-select t.name typist, e.core_type, e.tritype from enneagram e 
-join teacher t on e.teacherId = t.id
-where core_type = 9

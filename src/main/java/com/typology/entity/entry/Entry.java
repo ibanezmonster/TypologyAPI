@@ -41,8 +41,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-//@NoArgsConstructor
-@Builder
+@NoArgsConstructor
+//@Builder
 @Entity
 @Table(name = "entry")
 //@NamedQueries(value = {

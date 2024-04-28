@@ -51,11 +51,11 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
-        AppUser savedCustomer;
+        AppUser savedUser;
         ResponseEntity<String> response = null;
         
         try {
-        	savedCustomer = modelMapper.map(registrationDTO, AppUser.class);
+        	savedUser = modelMapper.map(registrationDTO, AppUser.class);
 		}
 		
 		catch(Exception e) {
@@ -65,23 +65,23 @@ public class RegistrationController {
         
         try {
         	//save user
-        	String hashedPwd = passwordEncoder.encode(savedCustomer.getPwd());
+        	String hashedPwd = passwordEncoder.encode(savedUser.getPwd());
         	
-        	savedCustomer.setPwd(hashedPwd);
-        	savedCustomer.setRole(AppUserRoles.USER.toString());
-        	savedCustomer.setRegistrationTimestamp(ZonedDateTime.now());
-        	savedCustomer.setStatus("enabled");
+        	savedUser.setPwd(hashedPwd);
+        	savedUser.setRole(AppUserRoles.USER.toString());
+        	savedUser.setRegistrationTimestamp(ZonedDateTime.now());
+        	savedUser.setStatus("enabled");
             
-        	savedCustomer = appUserRepository.save(savedCustomer);
+        	savedUser = appUserRepository.save(savedUser);
         	
         	//save authorities
         	//by default, give new user the 'VIEWTYPINGS' authority
         	Authority authority = new Authority();        	
-        	authority.setCustomer(savedCustomer);
+        	authority.setUser(savedUser);
         	authority.setName("VIEWTYPINGS");
         	authoritiesRepository.save(authority);
         	
-            if (savedCustomer.getId() > 0) {
+            if (savedUser.getId() > 0) {
                 response = ResponseEntity.status(HttpStatus.CREATED)
                         				 .body("Given user details are successfully registered");
             }

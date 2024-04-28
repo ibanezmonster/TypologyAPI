@@ -8,9 +8,9 @@ import org.hibernate.annotations.GenericGenerator;
 public class Authority {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
-    @GenericGenerator(name = "native",strategy = "native")
-    private Long id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)//,generator="native")
+    //@GenericGenerator(name = "native",strategy = "native")
+    private long id;
 
     private String name;
 
@@ -18,7 +18,7 @@ public class Authority {
     @JoinColumn(name = "user_id")		
     private AppUser appUser;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -34,12 +34,12 @@ public class Authority {
         this.name = name;
     }
 
-    public AppUser getCustomer() {
+    public AppUser getUser() {
         return appUser;
     }
 
-    public void setCustomer(AppUser customer) {
-        this.appUser = customer;
+    public void setUser(AppUser user) {
+        this.appUser = user;
     }
 
 }

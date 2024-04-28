@@ -94,7 +94,8 @@ public class SecurityConfig {
     					@Override
     					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
     						CorsConfiguration config = new CorsConfiguration();
-    						config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+    						//config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+    						config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:1334"));  //allow SQL Server on port 1334
     						config.setAllowedMethods(Collections.singletonList("*"));
     						config.setAllowCredentials(true);
     						config.setAllowedHeaders(Collections.singletonList("*"));	

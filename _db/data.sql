@@ -1,5 +1,13 @@
-CREATE DATABASE test_typology_api_db;
-use test_typology_api_db;
+use typology_db;
+
+
+
+
+use test_typology_db;
+
+select * from app_user;
+
+--select * from typist;
 
 IF OBJECT_ID('Authorities', 'U') IS NOT NULL
     DROP TABLE Authorities;
@@ -29,36 +37,7 @@ IF OBJECT_ID('Teacher', 'U') IS NOT NULL
     DROP TABLE Teacher;
 IF OBJECT_ID('Typist', 'U') IS NOT NULL
     DROP TABLE Typist;
-    
-    
 
-DROP SEQUENCE IF EXISTS app_user_seq;
-DROP SEQUENCE IF EXISTS authorities_seq;
-DROP SEQUENCE IF EXISTS typology_system_seq;
-DROP SEQUENCE IF EXISTS typist_seq;
-DROP SEQUENCE IF EXISTS enneagram_typing_consensus_seq;
-DROP SEQUENCE IF EXISTS entry_seq;
-DROP SEQUENCE IF EXISTS test_mappings_seq;
-DROP SEQUENCE IF EXISTS enneagram_typing_seq;
-DROP SEQUENCE IF EXISTS typing_seq;
-DROP SEQUENCE IF EXISTS socionics_seq;
-DROP SEQUENCE IF EXISTS attitudinal_psyche_seq;
-DROP SEQUENCE IF EXISTS mbti_seq;
-DROP SEQUENCE IF EXISTS ops_seq;
-
-CREATE SEQUENCE app_user_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE authorities_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE typology_system_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE typist_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE enneagram_typing_consensus_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE entry_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE test_mappings_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE enneagram_typing_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE typing_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE socionics_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE attitudinal_psyche_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE mbti_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE ops_seq START WITH 1 INCREMENT BY 1;
 
 
 CREATE TABLE App_User (

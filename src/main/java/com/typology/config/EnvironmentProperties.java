@@ -9,7 +9,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource({"classpath:appInfo.properties",
+				"classpath:actuator.properties",
+				"classpath:db.properties",
+				"classpath:hibernate.properties",
+				"classpath:security.properties"})	
 public class EnvironmentProperties implements EnvironmentAware {
 
 	@Autowired

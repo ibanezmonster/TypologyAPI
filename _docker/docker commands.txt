@@ -1,0 +1,13 @@
+https://www.youtube.com/watch?v=fFpDf5si_Hw
+https://hub.docker.com/_/microsoft-mssql-server
+https://tipsontech.medium.com/integration-testing-of-springboot-with-ms-sql-server-using-testcontainers-22058cb50b54
+
+
+Run SQL server
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Ibanez1!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest
+
+
+Run SQL server w/volume, so that if container is deleted, data is not lost
+-v volume, :/ represents where it should map to on the container
+
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Ibanez1!" -p 1433:1433 -v 'C:\DockerVolumes\SqlData\data':/var/opt/mssql/data -v 'C:\DockerVolumes\SqlData\log':/var/opt/mssql/log -v 'C:\DockerVolumes\SqlData\secrets':/var/opt/mssql/secrets -d mcr.microsoft.com/mssql/server:2019-latest

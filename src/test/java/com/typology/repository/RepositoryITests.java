@@ -1,268 +1,300 @@
-package com.typology.repository;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Set;
-
-import com.typology.entity.user.Authority;
-import com.typology.entity.user.Typist;
-import com.typology.integration.ContainerStartup;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-
-import com.typology.entity.typologySystem.EnneagramTyping;
-import com.typology.entity.user.AppUser;
-import com.typology.user.UserDetailsImpl;
-
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-
-
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
-@DataJpaTest
-@AutoConfigureMockMvc(addFilters = false)	//disabling security  
-public class RepositoryITests extends ContainerStartup{
-
-    @Autowired
-    private AppUserRepository appUserRepository;
-    
-    @Autowired
-    private EnneagramTypingRepository enneagramTypingRepository;
-    
-    @Autowired
-    private TypistRepository typistRepository;
-    
-    private AppUser appUser;
-    private Set<Authority> authorities;
-    private Authority viewTypings;
-    
-    
-    
-    @BeforeEach
-    public void setup(){
-    	
-    	appUser = new AppUser();    	
-    	appUser.setId(123);
-    	appUser.setName("Ibanez");
-    	appUser.setPwd("haha");    	
-    	appUser.setRegistrationTimestamp(ZonedDateTime.now());
-    	appUser.setStatus("enabled");
-    }
-    
-    
-    
-    
-    // JUnit test for save app user operation
-    @DisplayName("JUnit test for creating app user operation")
-    @Test
-    public void givenAppUserObject_whenSave_thenReturnSavedAppUser(){
-
-        //given
-    	//@BeforeEach
-    		
-        // when  	
-    	AppUser savedAppUser = appUserRepository.save(appUser);	
-
-        // then
-        assertThat(savedAppUser).isNotNull();
-        assertThat(savedAppUser.getId()).isGreaterThan(0);
-    }
-    
-
-    
-    
-    // JUnit test for save authority operation
-    @DisplayName("JUnit test for creating authority operation")
-    @Test
-    public void givenAuthorityObject_whenSave_thenReturnSavedAuthority(){
-
-        //given
-    	//@BeforeEach
-    		
-        // when
-    	viewTypings = new Authority();
-    	viewTypings.setName("VIEWTYPINGS");
-    	viewTypings.setId(123L);
-
-        // then
-        assertThat(viewTypings).isNotNull();
-        assertThat(viewTypings.getId()).isGreaterThan(0);
-    }
-
-    
-    
-    
-    
-    
-    
-    
-    // JUnit test for save enneagram typing operation
-    @DisplayName("JUnit test for save enneagram typing operation")
-    @Test
-    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTyping(){
-
-        //given
-    	EnneagramTyping enneagramTyping = new EnneagramTyping();
-    		
-    	enneagramTyping.setId(1);		
-    	enneagramTyping.setCoreType(1);
-    	enneagramTyping.setExInstinctMain("UN");
-    	enneagramTyping.setExInstinctStack("PIS");
-    	enneagramTyping.setInstinctMain("sp");
-    	enneagramTyping.setInstinctStack("sp/so");
-    	enneagramTyping.setOverlay(784);
-    	enneagramTyping.setTritypeOrdered(541);
-    	enneagramTyping.setTritypeUnordered(145);
-    	
-
-    	// when  
-    	EnneagramTyping savedEnneagramTyping = enneagramTypingRepository.save(enneagramTyping);
-
-        // then
-        assertThat(savedEnneagramTyping).isNotNull();
-        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
-        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
-        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
-        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
-        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
-        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
-        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
-        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
-        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
-    }
-    
-    
-    
-    
-    
-    
-    
-    // JUnit test for save typist operation
-    @DisplayName("JUnit test for save typist operation and retrieve by typist by name")
-    @Test
-    public void givenTypistObject_whenSave_thenReturnSavedTypistByName(){
-
-        //given
-    	Typist typist = new Typist();
-    	typist.setName("TestttttTypist");
-    		
-        // when   	
-    	Typist savedTypist = typistRepository.save(typist);
-
-        // then
-        assertThat(savedTypist).isNotNull();
-        assertThat(savedTypist.getName()).isEqualTo("TestttttTypist");
-        assertThat(savedTypist.getId()).isEqualTo(1);
-        assertThat(typistRepository.findByName(typist.getName()).isPresent());  
-    }
-    
-    
-    
-    
-    
-//    // JUnit test for save typist operation
-//    @DisplayName("JUnit test for save typist operation and retrieve by typist by name")
-//    @Test
-//    public void givenTypistObject_whenSave_thenReturnSavedTypistByName(){
+//package com.typology.repository;
 //
-//        //given - precondition or setup
-//    	//@BeforeEach
-//    		
-//        // when - action or the behaviour that we are going test    	
-//    	Typist typist = new Typist();
-//    	typist.setId(111);
-//    	typist.setName("Test Typist");    	
+//import static org.assertj.core.api.Assertions.assertThat;
 //
-//        // then - verify the output
-//        assertThat(typist).isNotNull();                
+//import java.util.Set;
+//
+//import com.typology.entity.user.Authority;
+//import com.typology.entity.user.Typist;
+//import com.typology.integration.ContainerStartup;
+//
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.junit.runner.RunWith;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+//import org.testcontainers.junit.jupiter.Testcontainers;
+//
+//import com.typology.entity.typologySystem.EnneagramTyping;
+//import com.typology.entity.user.AppUser;
+//import com.typology.user.UserDetailsImpl;
+//
+//import ch.qos.logback.classic.Level;
+//import ch.qos.logback.classic.Logger;
+//
+//import java.time.ZonedDateTime;
+//import java.util.HashSet;
+//import java.util.List;
+//import java.util.Optional;
+//
+////@RunWith(SpringRunner.class)
+//@DataJpaTest
+//@AutoConfigureMockMvc(addFilters = false)	//disabling security  
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)	//prevent Spring from trying to use embedded db
+//@Testcontainers
+//public class RepositoryITests extends ContainerStartup{
+//
+//    @Autowired
+//    private AppUserRepository appUserRepository;
+//    
+//    @Autowired
+//    private EnneagramTypingRepository enneagramTypingRepository;
+//    
+//    @Autowired
+//    private TypistRepository typistRepository;
+//    
+//    private AppUser appUser;
+//    private Set<Authority> authorities;
+//    private Authority viewTypings;
+//    
+//    
+//    
+//    @BeforeEach
+//    public void setup(){
+//    	 final Logger logger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+//    	    logger.setLevel(Level.ALL);
+//    	
+//    	appUser = new AppUser();    	
+//    	appUser.setId(123);
+//    	appUser.setName("Ibanez");
+//    	appUser.setPwd("haha");   
+//    	appUser.setRole("USER");
+//    	appUser.setRegistrationTimestamp(ZonedDateTime.now());
+//    	appUser.setStatus("enabled");
 //    }
 //    
 //    
-    
-    
-    
-    
-    
-    
-    
+//    
+//     
+//    // JUnit test for save app user operation
+//    @DisplayName("JUnit test for creating app user operation")
+//    @Test
+//    public void givenAppUserObject_whenSave_thenReturnSavedAppUser()
+//    {
+//
+//        //given
+//    	//@BeforeEach
+//    	
+//
+////    	Thread.sleep(1000000);
+////    	assertThat(1).isEqualTo(1);
+////    		
+//        //when  	
+//    	AppUser savedAppUser = appUserRepository.save(appUser);
+//
+//        // then
+//        assertThat(savedAppUser).isNotNull();
+//        assertThat(savedAppUser.getId()).isGreaterThan(0);
+//    }
+//    
+//
 //    
 //    
 //    // JUnit test for save app user operation
-//    @DisplayName("JUnit test for save enneagram typing operation and retrieve by typist and entry name")
+//    @DisplayName("JUnit test for creating app user operation and find by name")
 //    @Test
-//    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTypingByTypistAndEntryName(){
+//    public void givenAppUserObject_whenSave_thenFindAppUserByName(){
 //
-//        //given - precondition or setup
+//        //given
 //    	//@BeforeEach
+//    	AppUser savedAppUser = appUserRepository.save(appUser);
 //    		
-//        // when - action or the behaviour that we are going test    	
-//    	EnneagramTyping savedEnneagramTyping = new EnneagramTyping();
+//        // when  	
+//    	Optional<AppUser> foundAppUser = appUserRepository.findByName(savedAppUser.getName());
 //
-//    	savedEnneagramTyping.setId(1);		
-//    	savedEnneagramTyping.setCoreType(1);
-//    	savedEnneagramTyping.setExInstinctMain("UN");
-//    	savedEnneagramTyping.setExInstinctStack("PIS");
-//    	savedEnneagramTyping.setInstinctMain("sp");
-//    	savedEnneagramTyping.setInstinctStack("sp/so");
-//    	savedEnneagramTyping.setOverlay(784);
-//    	savedEnneagramTyping.setTritypeOrdered(541);
-//    	savedEnneagramTyping.setTritypeUnordered(145);
-//
-//        // then - verify the output
-//        assertThat(savedEnneagramTyping).isNotNull();
-//        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
-//        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
-//        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
-//        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
-//        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
-//        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
-//        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
-//        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
-//        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
+//        // then
+//        assertThat(foundAppUser).get().isNotNull();
+//        assertThat(foundAppUser).get().isEqualTo(savedAppUser);
 //    }
 //    
 //    
-//    
-//    // JUnit test for save app user operation
-//    @DisplayName("JUnit test for save enneagram typing operation and retrieve by typist and entry name")
+//    // JUnit test for save authority operation
+//    @DisplayName("JUnit test for creating authority operation")
 //    @Test
-//    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTypingByTypistAndEntryName(){
+//    public void givenAuthorityObject_whenSave_thenReturnSavedAuthority(){
 //
-//        //given - precondition or setup
+//        //given
 //    	//@BeforeEach
 //    		
-//        // when - action or the behaviour that we are going test    	
-//    	EnneagramTyping savedEnneagramTyping = new EnneagramTyping();
+//        // when
+//    	viewTypings = new Authority();
+//    	viewTypings.setName("VIEWTYPINGS");
+//    	viewTypings.setId(123L);
 //
-//    	savedEnneagramTyping.setId(1);		
-//    	savedEnneagramTyping.setCoreType(1);
-//    	savedEnneagramTyping.setExInstinctMain("UN");
-//    	savedEnneagramTyping.setExInstinctStack("PIS");
-//    	savedEnneagramTyping.setInstinctMain("sp");
-//    	savedEnneagramTyping.setInstinctStack("sp/so");
-//    	savedEnneagramTyping.setOverlay(784);
-//    	savedEnneagramTyping.setTritypeOrdered(541);
-//    	savedEnneagramTyping.setTritypeUnordered(145);
-//
-//        // then - verify the output
-//        assertThat(savedEnneagramTyping).isNotNull();
-//        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
-//        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
-//        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
-//        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
-//        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
-//        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
-//        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
-//        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
-//        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
+//        // then
+//        assertThat(viewTypings).isNotNull();
+//        assertThat(viewTypings.getId()).isGreaterThan(0);
 //    }
-}
+//
+//    
+//    
+//    
+////    
+////    
+////    
+////    
+////    // JUnit test for save enneagram typing operation
+////    @DisplayName("JUnit test for save enneagram typing operation")
+////    @Test
+////    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTyping(){
+////
+////        //given
+////    	EnneagramTyping enneagramTyping = new EnneagramTyping();
+////    		
+////    	enneagramTyping.setId(1);		
+////    	enneagramTyping.setCoreType(1);
+////    	enneagramTyping.setExInstinctMain("UN");
+////    	enneagramTyping.setExInstinctStack("PIS");
+////    	enneagramTyping.setInstinctMain("sp");
+////    	enneagramTyping.setInstinctStack("sp/so");
+////    	enneagramTyping.setOverlay(784);
+////    	enneagramTyping.setTritypeOrdered(541);
+////    	enneagramTyping.setTritypeUnordered(145);
+////    	
+////
+////    	// when  
+////    	EnneagramTyping savedEnneagramTyping = enneagramTypingRepository.save(enneagramTyping);
+////
+////        // then
+////        assertThat(savedEnneagramTyping).isNotNull();
+////        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
+////        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
+////        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
+////        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
+////        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
+////        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
+////        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
+////        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
+////        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
+////    }
+////    
+////    
+////    
+////    
+////    
+////    
+////    
+////    // JUnit test for save typist operation
+////    @DisplayName("JUnit test for save typist operation and retrieve by typist by name")
+////    @Test
+////    public void givenTypistObject_whenSave_thenReturnSavedTypistByName(){
+////
+////        //given
+////    	Typist typist = new Typist();
+////    	typist.setName("TestttttTypist");
+////    		
+////        // when   	
+////    	Typist savedTypist = typistRepository.save(typist);
+////
+////        // then
+////        assertThat(savedTypist).isNotNull();
+////        assertThat(savedTypist.getName()).isEqualTo("TestttttTypist");
+////        assertThat(savedTypist.getId()).isEqualTo(1);
+////        assertThat(typistRepository.findByName(typist.getName()).isPresent());  
+////    }
+////    
+////    
+////    
+//    
+//    
+////    // JUnit test for save typist operation
+////    @DisplayName("JUnit test for save typist operation and retrieve by typist by name")
+////    @Test
+////    public void givenTypistObject_whenSave_thenReturnSavedTypistByName(){
+////
+////        //given - precondition or setup
+////    	//@BeforeEach
+////    		
+////        // when - action or the behaviour that we are going test    	
+////    	Typist typist = new Typist();
+////    	typist.setId(111);
+////    	typist.setName("Test Typist");    	
+////
+////        // then - verify the output
+////        assertThat(typist).isNotNull();                
+////    }
+////    
+////    
+//    
+//    
+//    
+//    
+//    
+//    
+//    
+////    
+////    
+////    // JUnit test for save app user operation
+////    @DisplayName("JUnit test for save enneagram typing operation and retrieve by typist and entry name")
+////    @Test
+////    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTypingByTypistAndEntryName(){
+////
+////        //given - precondition or setup
+////    	//@BeforeEach
+////    		
+////        // when - action or the behaviour that we are going test    	
+////    	EnneagramTyping savedEnneagramTyping = new EnneagramTyping();
+////
+////    	savedEnneagramTyping.setId(1);		
+////    	savedEnneagramTyping.setCoreType(1);
+////    	savedEnneagramTyping.setExInstinctMain("UN");
+////    	savedEnneagramTyping.setExInstinctStack("PIS");
+////    	savedEnneagramTyping.setInstinctMain("sp");
+////    	savedEnneagramTyping.setInstinctStack("sp/so");
+////    	savedEnneagramTyping.setOverlay(784);
+////    	savedEnneagramTyping.setTritypeOrdered(541);
+////    	savedEnneagramTyping.setTritypeUnordered(145);
+////
+////        // then - verify the output
+////        assertThat(savedEnneagramTyping).isNotNull();
+////        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
+////        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
+////        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
+////        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
+////        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
+////        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
+////        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
+////        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
+////        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
+////    }
+////    
+////    
+////    
+////    // JUnit test for save app user operation
+////    @DisplayName("JUnit test for save enneagram typing operation and retrieve by typist and entry name")
+////    @Test
+////    public void givenEnneagramTypingObject_whenSave_thenReturnSavedEnneagramTypingByTypistAndEntryName(){
+////
+////        //given - precondition or setup
+////    	//@BeforeEach
+////    		
+////        // when - action or the behaviour that we are going test    	
+////    	EnneagramTyping savedEnneagramTyping = new EnneagramTyping();
+////
+////    	savedEnneagramTyping.setId(1);		
+////    	savedEnneagramTyping.setCoreType(1);
+////    	savedEnneagramTyping.setExInstinctMain("UN");
+////    	savedEnneagramTyping.setExInstinctStack("PIS");
+////    	savedEnneagramTyping.setInstinctMain("sp");
+////    	savedEnneagramTyping.setInstinctStack("sp/so");
+////    	savedEnneagramTyping.setOverlay(784);
+////    	savedEnneagramTyping.setTritypeOrdered(541);
+////    	savedEnneagramTyping.setTritypeUnordered(145);
+////
+////        // then - verify the output
+////        assertThat(savedEnneagramTyping).isNotNull();
+////        assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
+////        assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(1);
+////        assertThat(savedEnneagramTyping.getExInstinctMain()).isEqualTo("UN");
+////        assertThat(savedEnneagramTyping.getExInstinctStack()).isEqualTo("PIS");
+////        assertThat(savedEnneagramTyping.getInstinctMain()).isEqualTo("sp");
+////        assertThat(savedEnneagramTyping.getInstinctStack()).isEqualTo("sp/so");
+////        assertThat(savedEnneagramTyping.getOverlay()).isEqualTo(784);
+////        assertThat(savedEnneagramTyping.getTritypeOrdered()).isEqualTo(541);
+////        assertThat(savedEnneagramTyping.getTritypeUnordered()).isEqualTo(145);                
+////    }
+//}

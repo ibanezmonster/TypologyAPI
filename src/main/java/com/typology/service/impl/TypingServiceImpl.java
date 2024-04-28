@@ -179,17 +179,18 @@ public class TypingServiceImpl implements TypingService
 			
 			
 			//save in typing table
-			Typing typing = new Typing();
+			//Typing typing = new Typing();
 			Entry entry = this.entryRepository.findByName(entryName)
 											  .orElseThrow();	//NoSuchElementException
 						
 			TypologySystem typologySystemEntity = this.typologySystemRepository.findByName(typologySystem)
 																				.orElseThrow();	//NoSuchElementException
-			
-			typing.setEntry(entry);
-			typing.setTypist(typist);
-			typing.setTypologySystem(typologySystemEntity);
-			typing.setCreatedTimestamp(LocalDateTime.now());
+			Typing typing = Typing.builder()
+							   	  .entry(entry)
+								  .typist(typist)
+								  .typologySystem(typologySystemEntity)
+								  .createdTimestamp(LocalDateTime.now())
+								  .build();
 			
 			typingRepository.save(typing);
 			

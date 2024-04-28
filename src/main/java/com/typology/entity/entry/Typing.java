@@ -24,6 +24,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 @JsonIgnoreProperties({"entry", "createdTimestamp", "updatedTimestamp"})
 @Entity
 public class Typing
