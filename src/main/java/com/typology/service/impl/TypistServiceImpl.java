@@ -15,6 +15,11 @@ public class TypistServiceImpl implements TypistService
 	@Autowired
 	TypistRepository typistRepository;
 	
+	public TypistServiceImpl(TypistRepository typistRepository)
+	{
+		this.typistRepository = typistRepository;
+	}
+
 	public Typist saveTypist(Typist typist){
 		Typist savedTypist = typistRepository.save(typist);
 		return savedTypist;

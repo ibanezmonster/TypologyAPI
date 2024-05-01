@@ -12,7 +12,7 @@ import lombok.Data;
 public abstract sealed class TypologySystemTyping permits EnneagramTyping, EnneagramTypingConsensus, AttitudinalPsycheTyping
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
 	@Override

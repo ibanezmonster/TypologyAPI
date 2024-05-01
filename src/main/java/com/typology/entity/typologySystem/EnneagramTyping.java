@@ -23,6 +23,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 //import javax.validation.ConstraintViolationException;
 
@@ -30,10 +31,12 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@Builder
+//@Builder
 @EqualsAndHashCode(callSuper=false)
-@Table(name="enneagramTyping")
+@NoArgsConstructor
+//@Table(name="Enneagram_Typing")
 public final class EnneagramTyping extends TypologySystemTyping
+//public class EnneagramTyping 
 {
 	protected static final int[] val = {1,2,3};
 	
@@ -53,6 +56,7 @@ public final class EnneagramTyping extends TypologySystemTyping
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="typist_id")
 	private Typist typist;
+	
 	
 	@NotNull
 	@Min(value = 1, message = "Core type must be between 1 and 9")

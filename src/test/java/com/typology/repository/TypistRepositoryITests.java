@@ -30,8 +30,7 @@ public class TypistRepositoryITests extends ContainerStartup
 
 	@BeforeEach
     public void setup(){
-		typist = new Typist();
-		typist.setId(110);
+		typist = new Typist();		
 		typist.setName("UFDISUFODS");
 	}
 	

@@ -14,13 +14,18 @@ import com.typology.user.UserDetailsImpl;
 public class UserDetailsServiceImpl implements UserDetailsService {
 	
 	@Autowired
-	AppUserRepository userRepository;
+	AppUserRepository appUserRepository;
 	
-    @Override
+    public UserDetailsServiceImpl(AppUserRepository appUserRepository)
+	{
+		this.appUserRepository = appUserRepository;
+	}
+
+	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-    	AppUser user = userRepository.findByName(username)
-    	        				  	 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    	AppUser user = appUserRepository.findByName(username)
+    	        				  	 	.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
     	return UserDetailsImpl.build(user);
     }

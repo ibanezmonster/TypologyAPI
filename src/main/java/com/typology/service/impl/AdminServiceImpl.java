@@ -33,8 +33,15 @@ public class AdminServiceImpl implements AdminService
 	@Autowired
 	private AppUserRepository appUserRepository;
 	
-	@PatchMapping("/update_user/{name}/role")
-	public ResponseEntity<String> editUserRole(@PathVariable String name, @RequestBody AppUser appUser)
+	
+	
+	public AdminServiceImpl(AppUserRepository appUserRepository)
+	{
+		this.appUserRepository = appUserRepository;
+	}
+
+
+	public ResponseEntity<String> editUserRole(String name, AppUser appUser)
 	{	
 		ResponseEntity<String> response = null;
 		
@@ -44,14 +51,14 @@ public class AdminServiceImpl implements AdminService
 												 .orElseThrow(() -> {
 							                            NotFoundException notFoundException = new NotFoundException("User with name \'" + name + "\' not found");
 							                            return notFoundException;
-							                        });
+							                        		  });
 											                    	
 			String foundName = appUserDB.getName();
 			String oldRole = appUserDB.getRole();			
 			String newRole = appUser.getRole();
 						
-			//handle bad input for role
-			if(!EnumStringComparison.isStringInEnum(newRole.toUpperCase(), AppUserRoles.class)){
+			//handle bad input for role			
+			if(newRole.isBlank() || newRole.isEmpty() || !EnumStringComparison.isStringInEnum(newRole.toUpperCase(), AppUserRoles.class)){
 					throw new IllegalArgumentException("Invalid role selected.");
 			}
 			
@@ -85,8 +92,7 @@ public class AdminServiceImpl implements AdminService
 	}
 	
 	
-	@PatchMapping("/update_user/{name}/status")
-	public ResponseEntity<String> editUserStatus(@PathVariable String name, @RequestBody AppUser appUser)
+	public ResponseEntity<String> editUserStatus(String name, AppUser appUser)
 	{	
 		ResponseEntity<String> response = null;
 		

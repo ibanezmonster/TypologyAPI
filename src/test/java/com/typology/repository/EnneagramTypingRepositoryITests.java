@@ -19,6 +19,16 @@ import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.entity.user.Typist;
 import com.typology.integration.ContainerStartup;
 
+import jakarta.transaction.Transactional;
+
+
+
+//Note: make sure that Generated values is set to IDENTITY for both the mapped superclass and the EnneagramTyping subclass
+//if it isn't, it will either a) not run the insert on save (you can force with saveAndFlush), 
+//or b) throw IDENTITY exception error if using saveAndFlush, or when grouping it as a transaction before another entity is being saved
+
+
+
 @DataJpaTest
 @AutoConfigureMockMvc(addFilters = false)	//disabling security  
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)	//prevent Spring from trying to use embedded db
@@ -41,21 +51,27 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 	@BeforeEach
     public void setup(){
 
-		entry = new Entry();		
-		entry.setId(789);
+		entry = new Entry();
 		entry.setName("Some character");	
 		
 		typist = new Typist();
-		typist.setId(110);
-		typist.setName("UFDISUFODS");
-				
-		enneagramTyping = EnneagramTyping.builder()
-										 .coreType(7)
-										 .wing(8)
-										 .tritypeUnordered(784)
-										 .entry(entry)
-										 .typist(typist)
-										 .build();
+		typist.setName("Typist Person");
+					
+		enneagramTyping = new EnneagramTyping();
+		enneagramTyping.setCoreType(7);
+		enneagramTyping.setWing(8);
+		enneagramTyping.setTritypeUnordered(478);
+		enneagramTyping.setTritypeOrdered(784);
+		enneagramTyping.setInstinctMain("so");
+		enneagramTyping.setInstinctStack("so/sp");
+		enneagramTyping.setInstinctStackFlow("synflow");
+		enneagramTyping.setExInstinctMain("UN");
+		enneagramTyping.setExInstinctStack("UN/BG/SY");
+		enneagramTyping.setExInstinctStackAbbreviation("749");
+		enneagramTyping.setExInstinctStackFlow("PIS");
+		enneagramTyping.setOverlay(369);
+		enneagramTyping.setEntry(entry);
+		enneagramTyping.setTypist(typist);				 
     }
 	
 	@DisplayName("JUnit test for saving enneagram typing operation")
@@ -64,9 +80,11 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 
         //given
     	
-        //when  	
-		EnneagramTyping savedEnneagramTyping = enneagramTypingRepository.save(enneagramTyping);
-
+        //when
+		entryRepository.save(entry);
+		typistRepository.save(typist);
+		EnneagramTyping savedEnneagramTyping = enneagramTypingRepository.save(enneagramTyping);			//saveAndFlush if not saved
+		
         // then
         assertThat(savedEnneagramTyping).isNotNull();
         assertThat(savedEnneagramTyping.getId()).isGreaterThan(0);
@@ -88,8 +106,8 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 
         // then
 		//assertThat(1).isEqualTo(1);
-        assertThat(foundEnneagramTyping.get()).isNotNull();
-        assertThat(foundEnneagramTyping.get().getEntry()).isEqualTo(entry.getName());
-        assertThat(foundEnneagramTyping.get().getTypist()).isEqualTo(typist.getName());
+		assertThat(foundEnneagramTyping.get()).isNotNull();
+        assertThat(foundEnneagramTyping.get().getEntry().getName()).isEqualTo(entry.getName());
+        assertThat(foundEnneagramTyping.get().getTypist().getName()).isEqualTo(typist.getName());				
     }
 }

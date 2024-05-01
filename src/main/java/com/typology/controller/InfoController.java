@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.typology.entity.info.Teacher;
+import com.typology.entity.user.Typist;
 import com.typology.service.EntryService;
 import com.typology.service.InfoService;
 
@@ -24,10 +25,10 @@ public class InfoController
 	@Autowired
 	InfoService infoService;
 	
-	@GetMapping("/teachers")
+	@GetMapping("/typists")
     @ResponseStatus(HttpStatus.OK)
-	public List<Teacher> getTeachers(){
-		return infoService.getTeachers();
+	public List<Typist> getTypists(){
+		return infoService.getTypists();
 	}
 //	
 //	

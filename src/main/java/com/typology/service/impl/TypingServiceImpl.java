@@ -65,7 +65,13 @@ public class TypingServiceImpl implements TypingService
 	@Autowired
 	private RestTemplateClass restTemplate;
 	
-	private final Logger LOG = Logger.getLogger(TypingServiceImpl.class.getName()); 
+	private final Logger LOG = Logger.getLogger(TypingServiceImpl.class.getName());
+	
+
+	public TypingServiceImpl(TypingRepository typingRepository)
+	{
+		this.typingRepository = typingRepository;
+	}
 	
 	public List<Typing> viewAllOfMyTypings(){		
 		List<Typing> typings = new ArrayList<>();
@@ -85,37 +91,13 @@ public class TypingServiceImpl implements TypingService
 	
 	
 	
-	public Typing saveTyping(Typing typing) {	
-		Typing savedTyping = typingRepository.save(typing);
-		return savedTyping;
-	}
+//	public Typing saveTyping(Typing typing) {	
+//		Typing savedTyping = typingRepository.save(typing);
+//		return savedTyping;
+//	}
 	
 	
 	public TypologySystemTyping viewTyping(String entryName, String typologySystem) {
-		
-//		ResponseEntity<List<Typing>> response;
-//		ResponseEntity<Object[]> responseEntity =
-//				   restTemplate.getForEntity("http://localhost:8080/api/v1/profile/test123/my_typing", Object[].class);
-//		
-//		Object[] objects = responseEntity.getBody();
-//		ObjectMapper mapper = new ObjectMapper();
-//
-//		return Arrays.stream(objects)
-//					  .map(object -> mapper.convertValue(object, Typing.class))
-//					  .map(Typing::getTypist)
-//					  .collect(Collectors.toList());
-//		ResponseEntity<List<Typing>> response = null;
-		
-		
-		
-//		ResponseEntity<List<Typing>> response = restTemplate.exchange("http://localhost:8080/api/v1/profile/test123/my_typing",
-//														  				HttpMethod.GET,
-//														  				null,
-//														  				new ParameterizedTypeReference<List<Typing>>() {}
-//														  				);
-
-		//List<Typing> typing = typingRespository
-
 		
 		//get typist name from user session
 		String typistName = "Rob Zeke";
@@ -128,7 +110,7 @@ public class TypingServiceImpl implements TypingService
 		switch(typologySystem) {
 		case "enneagram":
 			EnneagramTyping typing = enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typistName, entryName)
-									  								 .orElseThrow(ResourceNotFoundException::new);
+									  						  .orElseThrow(ResourceNotFoundException::new);
 			list = typing;
 		}
 		
@@ -340,4 +322,7 @@ public class TypingServiceImpl implements TypingService
 		
 		enneagramTypingRepository.save(enneagramTypingToUpdate);	
 	}
+
+
+
 }

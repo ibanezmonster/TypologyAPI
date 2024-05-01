@@ -28,7 +28,9 @@ public class EntryServiceImpl implements EntryService
 
 	
 	
-	
+	public EntryServiceImpl(EntryRepository entryRepository) {
+		this.entryRepository = entryRepository;
+	}
 	
 	
 	//Typing service stuff

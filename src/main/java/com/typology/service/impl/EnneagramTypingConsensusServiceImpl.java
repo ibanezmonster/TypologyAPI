@@ -16,6 +16,11 @@ public class EnneagramTypingConsensusServiceImpl implements EnneagramTypingConse
 	@Autowired
 	EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
 	
+
+	public EnneagramTypingConsensusServiceImpl(EnneagramTypingConsensusRepository enneagramTypingConsensusRepository){
+		this.enneagramTypingConsensusRepository = enneagramTypingConsensusRepository;
+	}
+	
 	@Override
 	public EnneagramTypingConsensus saveEnneagramTypingConsensus(EnneagramTypingConsensus enneagramTypingConsensus) {
 		EnneagramTypingConsensus savedEnneagramTypingConsensus = 
