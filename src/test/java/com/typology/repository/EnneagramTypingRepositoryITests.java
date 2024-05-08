@@ -105,9 +105,25 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 		Optional<EnneagramTyping> foundEnneagramTyping = enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName("Typist Person", "Some character");
 
         // then
-		//assertThat(1).isEqualTo(1);
 		assertThat(foundEnneagramTyping.get()).isNotNull();
         assertThat(foundEnneagramTyping.get().getEntry().getName()).isEqualTo(entry.getName());
         assertThat(foundEnneagramTyping.get().getTypist().getName()).isEqualTo(typist.getName());				
+    }
+	
+	
+	@DisplayName("JUnit test for returning nothing when finding enneagram typing by typist and entry name")
+    @Test
+    public void givenEmptyEnneagramTyping_whenFindEnneagramTypingByTypistAndEntryName_thenReturnNothing(){
+
+        //given
+    	
+        //when  
+		//save nothing
+
+		Optional<EnneagramTyping> foundEnneagramTyping = 
+						enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName("This typist does not exist", "Some character that does not exist");
+
+        // then
+		assertThat(foundEnneagramTyping.isEmpty());				
     }
 }

@@ -64,11 +64,11 @@ public class TypingServiceImplTests
 		enneagramSystem = new TypologySystem();
 		enneagramSystem.setName("Enneagram");
 		
-		typing = Typing.builder()
-					   .typist(typist)
-					   .entry(entry)
-					   .typologySystem(enneagramSystem)
-					   .build();  	
+		typing = new Typing();
+		typing.setTypist(typist);
+		typing.setEntry(entry);
+		typing.setTypologySystem(enneagramSystem);
+		
 		
 		enneagramTyping = new EnneagramTyping();
 		enneagramTyping.setCoreType(7);

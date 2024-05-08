@@ -61,6 +61,7 @@ public class LoginController
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	
 	//@Order
 	@PostMapping(path = "/login", 
 				 consumes = {MediaType.APPLICATION_JSON_VALUE}, 
@@ -69,6 +70,7 @@ public class LoginController
 		
 		AppUser appUser;
 		Authentication authObj;
+		//AuthenticationManager authenticationManager = null; // = new AuthenticationManager();
 		
 		try {
 			appUser = modelMapper.map(loginDTO, AppUser.class);
@@ -80,24 +82,19 @@ public class LoginController
 		}
 		
 		try {
-			
 			//set the user as an Authentication object in the SecurityContextHolder
 			authObj = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getName(), appUser.getPwd()));			
-			System.out.println("????????????????????" + authObj.isAuthenticated());
-			
 			SecurityContextHolder.getContext().setAuthentication(authObj);
-			System.out.println(authObj.getAuthorities());
-			LOG.info("Placed in security context holder: " + SecurityContextHolder.getContext().getAuthentication().toString());				
+			
+			//LOG.info("Placed in security context holder: " + SecurityContextHolder.getContext().getAuthentication().toString());				
 			
 			
 			//look up AppUser in database in order to get authorities list, so that it can be stored in JWT
 			AppUser appUserForAuthoritiesLookup = appUserService.getAppUserByName(appUser.getName());		//this is null for some reason
-			LOG.info("Looking up: " + appUserForAuthoritiesLookup.getId() + ", authorities are: " + appUserForAuthoritiesLookup.getAuthorities().toString());
+			//LOG.info("Looking up: " + appUserForAuthoritiesLookup.getId() + ", authorities are: " + appUserForAuthoritiesLookup.getAuthorities().toString());
 			
 			UserDetailsImpl userDetails = UserDetailsImpl.build(appUserForAuthoritiesLookup);
-			ResponseCookie jwtCookie = jwt.generateJwtCookie(userDetails);
-		    
-		    //response.setHeader(JwtSecurityConstants.JWT_HEADER, jwtCookie.toString());
+			ResponseCookie jwtCookie = jwt.generateJwtCookie(userDetails);		    		    
 					    
 			return ResponseEntity.ok()
 								 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())

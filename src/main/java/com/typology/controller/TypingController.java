@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.TypologySystemTyping;
@@ -33,13 +34,13 @@ public class TypingController
 	
 	//view your own typing for an entry, using one typology system
 	@GetMapping("/my_typings")		//if kept here, remove /profile
-	public List<Typing> viewAllOfMyTypings(){		
+	public ResponseEntity<?> viewAllOfMyTypings() throws JsonProcessingException{		
 		return typingService.viewAllOfMyTypings();
 	}
 	
 	//view your own typing for an entry, using one typology system
 	@GetMapping("/{entryName}/my_typing/{typologySystem}")
-	public TypologySystemTyping viewTyping(@PathVariable String entryName, @PathVariable String typologySystem){		
+	public ResponseEntity<?> viewTyping(@PathVariable String entryName, @PathVariable String typologySystem) throws JsonProcessingException{		
 		return typingService.viewTyping(entryName, typologySystem);
 	}
 	
@@ -58,7 +59,7 @@ public class TypingController
 	}
 	
 	//delete your typing
-	@DeleteMapping(path="/{entryName}/my_typing/{typologySystem}")
+	@DeleteMapping("/{entryName}/my_typing/{typologySystem}")
 	public ResponseEntity<HttpStatus> deleteTyping(@PathVariable String entryName, @PathVariable String typologySystem) {
 		return typingService.deleteTyping(entryName, typologySystem);
 	}

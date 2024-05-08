@@ -1,6 +1,7 @@
 package com.typology.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
 import static org.mockito.BDDMockito.given;
 
 import java.time.ZonedDateTime;
@@ -14,12 +15,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.typology.entity.user.AppUser;
 import com.typology.repository.AppUserRepository;
+import com.typology.security.AppUserRoles;
+import com.typology.security.AppUserStatus;
 import com.typology.service.impl.AdminServiceImpl;
 import com.typology.service.impl.AppUserServiceImpl;
+import com.typology.utils.EnumStringComparison;
 
 @ExtendWith(MockitoExtension.class)
 public class AdminServiceImplTests
@@ -45,7 +50,8 @@ public class AdminServiceImplTests
     					 .name("Ibanez")
     					 .pwd("haha")
     					 .registrationTimestamp(ZonedDateTime.now())
-    					 .status("enabled")
+    					 .role(AppUserRoles.USER.toString())
+    					 .status(AppUserStatus.ENABLED.toString())
     					 .build();
     }
     
@@ -53,34 +59,138 @@ public class AdminServiceImplTests
     
     @DisplayName("JUnit service test for edit user role")
     @Test
-    public void givenAppUser_whenEditAppUserRole_thenReturnOkStatus(){
+    public void givenAppUser_whenEditAppUserRole_thenReturnUpdatedRole(){
     	
         // given
         given(appUserRepository.findByName(appUser.getName()))
         					   .willReturn(Optional.of(appUser));
         
+        appUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
+        
         // when                
         ResponseEntity<String> editedAppUserRole = adminService.editUserRole(appUser.getName(), appUser);  
                         
         // then
-        //assertThat(1).isEqualTo(1);
-        assertThat(editedAppUserRole).isNotNull();            	
+        assertThat(editedAppUserRole).isNotNull();  
+        assertThat(editedAppUserRole.getStatusCode().equals(HttpStatus.OK));
+        assertThat(editedAppUserRole).asString().containsIgnoringWhitespaces(AppUserRoles.CONTRIBUTOR.toString());
     }
     
     
     @DisplayName("JUnit service test for edit user status")
     @Test
-    public void givenAppUser_whenEditAppUserStatus_thenReturnOkStatus(){
+    public void givenAppUser_whenEditAppUserStatus_thenReturnUpdatedStatus(){
     	
         // given
     	given(appUserRepository.findByName(appUser.getName()))
 		   					   .willReturn(Optional.of(appUser));
         
+    	appUser.setStatus(AppUserStatus.DISABLED.toString());
+    	
         // when                
         ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(appUser.getName(), appUser);  
                 
         // then
-        assertThat(editedAppUserStatus).isNotNull();            	
-        //assertThat(savedAppUser.getName()).isEqualTo("Ibanez");    	
+        assertThat(editedAppUserStatus).isNotNull();   
+        assertThat(editedAppUserStatus.getStatusCode().equals(HttpStatus.OK));
+        assertThat(editedAppUserStatus).asString().containsIgnoringWhitespaces(AppUserStatus.DISABLED.toString());
+    }
+    
+    
+    
+    
+    @DisplayName("JUnit service test for edit user role with invalid value")
+    @Test
+    public void givenAppUser_whenEditAppUserRole_thenReturnError(){
+    	
+        // given
+        given(appUserRepository.findByName(appUser.getName()))
+        					   .willReturn(Optional.of(appUser));
+        
+        String invalidValue = "some dumb invalid value";
+        appUser.setRole(invalidValue);
+        
+        // when                
+        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(appUser.getName(), appUser);  
+                        
+        // then
+        assertThat(editedAppUserRole).asString().doesNotContain(invalidValue);
+        assertThat(editedAppUserRole.getStatusCode().equals(HttpStatus.BAD_REQUEST));
+    }
+    
+    
+    
+    @DisplayName("JUnit service test for edit user status with invalid value")
+    @Test
+    public void givenAppUser_whenEditAppUserStatus_thenReturnError(){
+    	
+        // given
+        given(appUserRepository.findByName(appUser.getName()))
+        					   .willReturn(Optional.of(appUser));
+        
+        String invalidValue = "some dumb invalid value";
+        appUser.setStatus(invalidValue);
+        
+        // when                
+        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(appUser.getName(), appUser);  
+                        
+        // then
+        assertThat(editedAppUserStatus).asString().doesNotContain(invalidValue);
+        assertThat(editedAppUserStatus.getStatusCode().equals(HttpStatus.BAD_REQUEST));
+    }
+    
+    
+    
+    @DisplayName("JUnit service test for edit nonexistent user with valid status")
+    @Test
+    public void givenNonexistentAppUser_whenEditAppUserRole_thenReturnError(){
+    	
+        // given
+        given(appUserRepository.findByName(appUser.getName()))
+        					   .willReturn(Optional.of(appUser));
+        
+        AppUser fakeAppUser  = AppUser.builder()
+									 .name("fakey")
+									 .pwd("fdsa")
+									 .registrationTimestamp(ZonedDateTime.now())
+									 .role(AppUserRoles.USER.toString())
+									 .status(AppUserStatus.ENABLED.toString())
+									 .build();
+
+        fakeAppUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
+        
+        // when                
+        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(fakeAppUser.getName(), appUser);  
+                        
+        // then
+        assertThat(editedAppUserRole.getStatusCode().equals(HttpStatus.NOT_FOUND));
+    }
+    
+    
+    
+    
+    @DisplayName("JUnit service test for edit nonexistent user with valid status")
+    @Test
+    public void givenNonexistentAppUser_whenEditAppUserStatus_thenReturnError(){
+    	
+        // given
+        given(appUserRepository.findByName(appUser.getName()))
+        					   .willReturn(Optional.of(appUser));
+        
+        AppUser fakeAppUser  = AppUser.builder()
+									 .name("fakey")
+									 .pwd("fdsa")
+									 .registrationTimestamp(ZonedDateTime.now())
+									 .role(AppUserRoles.USER.toString())
+									 .status(AppUserStatus.ENABLED.toString())
+									 .build();
+
+        fakeAppUser.setStatus(AppUserStatus.DISABLED.toString());
+        
+        // when                
+        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(fakeAppUser.getName(), appUser);  
+                        
+        // then
+        assertThat(editedAppUserStatus.getStatusCode().equals(HttpStatus.NOT_FOUND));
     }
 }

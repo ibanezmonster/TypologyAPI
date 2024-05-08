@@ -17,7 +17,7 @@ import com.typology.service.InfoService;
 
 import lombok.AllArgsConstructor;
 
-@RequestMapping("/api/info")
+@RequestMapping("/api/${api.version}/info")
 @RestController
 @AllArgsConstructor
 public class InfoController

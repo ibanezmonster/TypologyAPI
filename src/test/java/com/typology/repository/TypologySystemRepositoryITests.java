@@ -65,4 +65,21 @@ public class TypologySystemRepositoryITests extends ContainerStartup
         assertThat(foundTypologySystem.get().getName()).isEqualTo(typologySystem.getName());
     }
 	
+	
+	
+	
+	
+	@DisplayName("JUnit test for returning nothing when finding by nonexistent typology system by name")
+    @Test
+    public void givenNonexistentTypologySystem_whenFindByName_thenReturnNothing(){
+
+        //given
+		typologySystemRepository.save(typologySystem);
+    	
+        //when  	
+		Optional<TypologySystem> foundTypologySystem = typologySystemRepository.findByName("This system does not exist");
+
+        // then
+        assertThat(foundTypologySystem).isEmpty();
+    }
 }

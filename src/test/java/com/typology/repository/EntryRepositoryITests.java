@@ -65,4 +65,18 @@ public class EntryRepositoryITests extends ContainerStartup
 		assertThat(foundEntry).isNotNull();
         assertThat(foundEntry.get().getName()).isEqualTo(foundEntry.get().getName());
     }
+	
+	
+	@DisplayName("JUnit test for finding entry by name")
+    @Test
+    public void givenNonexistentEntry_whenFindEntryByName_thenReturnNothing(){
+
+        //given
+    	
+        //when  			
+		Optional<Entry> foundEntry = entryRepository.findByName("Nonexistent entry");
+
+        // then
+		assertThat(foundEntry).isEmpty();
+    }
 }

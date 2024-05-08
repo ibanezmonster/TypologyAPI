@@ -64,4 +64,18 @@ public class TypistRepositoryITests extends ContainerStartup
         assertThat(foundTypist).isNotNull();
         assertThat(foundTypist.get().getName()).isEqualTo(typist.getName());
     }
+	
+	
+	@DisplayName("JUnit test for returning nothing when finding by nonexistent typist by name")
+    @Test
+    public void givenNonexistentTypist_whenFindByName_thenReturnNothing(){
+
+        //given
+		
+        //when  	
+		Optional<Typist> foundTypist = typistRepository.findByName(typist.getName());
+
+        // then
+        assertThat(foundTypist).isEmpty();
+    }
 }

@@ -16,11 +16,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.typology.dto.MyTypingsDTO;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.TypologySystem;
@@ -50,6 +54,9 @@ public class TypingServiceImpl implements TypingService
 	@Autowired
 	TypingRepository typingRepository;
 	
+    @Autowired						
+    private ObjectMapper objectMapper;
+	
 	@Autowired
 	EnneagramTypingRepository enneagramTypingRepository;
 	
@@ -73,11 +80,17 @@ public class TypingServiceImpl implements TypingService
 		this.typingRepository = typingRepository;
 	}
 	
-	public List<Typing> viewAllOfMyTypings(){		
+	
+	
+	
+	
+	public ResponseEntity<?> viewAllOfMyTypings() throws JsonProcessingException {		
+
 		List<Typing> typings = new ArrayList<>();
+		List<MyTypingsDTO> myTypingsDTO = new ArrayList<>();		
 		
 		try {
-			typings = typingRepository.viewAllOfMyTypings("Rob Zeke")
+			typings = typingRepository.viewAllOfMyTypings("Newtypist")
 					  				  .orElseThrow(ResourceNotFoundException::new);
 		}
 		
@@ -85,38 +98,63 @@ public class TypingServiceImpl implements TypingService
 			LOG.warning("Typings not found");
 		}
 		
+		//convert to DTO
+		for(Typing typing : typings) {
+			myTypingsDTO.add(new MyTypingsDTO(typing.getEntry().getName(), 
+											  typing.getTypologySystem().getName()));						
+		}
 		
-		return typings;
+		return typings.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+												 .body("No typings found")
+								 : ResponseEntity.status(HttpStatus.OK)
+								 				 .contentType(MediaType.APPLICATION_JSON)
+								 				 .body(objectMapper.writeValueAsString(myTypingsDTO));
 	}
 	
 	
 	
-//	public Typing saveTyping(Typing typing) {	
-//		Typing savedTyping = typingRepository.save(typing);
-//		return savedTyping;
-//	}
 	
-	
-	public TypologySystemTyping viewTyping(String entryName, String typologySystem) {
+	public ResponseEntity<?> viewTyping(String entryName, String typologySystem) throws JsonProcessingException {	
 		
 		//get typist name from user session
-		String typistName = "Rob Zeke";
+		String typistName = "Newtypist";
 		
+		//for future typing system additions:
 		//run the query based on the system being used
 		//for this example, use enneagram
 		
 		TypologySystemTyping list = null;
+		Optional<EnneagramTyping> enneagramTyping;
 		
-		switch(typologySystem) {
-		case "enneagram":
-			EnneagramTyping typing = enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typistName, entryName)
-									  						  .orElseThrow(ResourceNotFoundException::new);
-			list = typing;
+		try {
+			switch(typologySystem) {
+			case "enneagram":
+				enneagramTyping = Optional.of(enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typistName, entryName)
+										  					  		   .orElseThrow(ResourceNotFoundException::new));
+
+				list = (TypologySystemTyping) enneagramTyping.get();
+				
+				//System.out.println("typing:" + typing.toString());
+				
+				
+			}
 		}
 		
+		catch(ResourceNotFoundException e) {
+			System.out.println("Not found");
+		}
+		
+		catch(Exception e) {
+			System.out.println("Exception occurred");
+		}
+		
+		//System.out.println("list:" + list.toString());
 		
 		
-		return list;
+		return list == null ? ResponseEntity.status(HttpStatus.NOT_FOUND)
+											.body("Typing not found")
+							: ResponseEntity.status(HttpStatus.OK)
+											.body(objectMapper.writeValueAsString(list));
 		
 				
 				
@@ -167,12 +205,18 @@ public class TypingServiceImpl implements TypingService
 						
 			TypologySystem typologySystemEntity = this.typologySystemRepository.findByName(typologySystem)
 																				.orElseThrow();	//NoSuchElementException
-			Typing typing = Typing.builder()
-							   	  .entry(entry)
-								  .typist(typist)
-								  .typologySystem(typologySystemEntity)
-								  .createdTimestamp(LocalDateTime.now())
-								  .build();
+			
+			Typing typing = new Typing();
+			typing.setEntry(entry);
+			typing.setTypist(typist);
+			typing.setTypologySystem(typologySystemEntity);
+			typing.setCreatedTimestamp(LocalDateTime.now());
+//			Typing typing = Typing.builder()
+//							   	  .entry(entry)
+//								  .typist(typist)
+//								  .typologySystem(typologySystemEntity)
+//								  .createdTimestamp(LocalDateTime.now())
+//								  .build();
 			
 			typingRepository.save(typing);
 			
@@ -214,7 +258,7 @@ public class TypingServiceImpl implements TypingService
 		//transaction: save in enneagramtyping table and typing table
 		try{
 			
-			Typist typist = this.typistRepository.findByName("OPS")
+			Typist typist = this.typistRepository.findByName("Newtypist")
 					 							 .orElseThrow();	//NoSuchElementException
 			
 			switch(typologySystem) {
@@ -223,7 +267,7 @@ public class TypingServiceImpl implements TypingService
 			}
 			
 			response = ResponseEntity.status(HttpStatus.OK)
-					 				 .body("For entry: " + entryName + ", " + " typing is updated");
+					 				 .body("For entry: " + entryName + ", " + "typing is updated");
 		}
 		
 		catch(ResourceNotFoundException e){
@@ -246,7 +290,7 @@ public class TypingServiceImpl implements TypingService
 		//transaction: save in enneagramtyping table and typing table
 		try{
 			
-			Typist typist = this.typistRepository.findByName("OPS")
+			Typist typist = this.typistRepository.findByName("Newtypist")
 					 							 .orElseThrow();	//NoSuchElementException
 			
 			if(!enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entryName)

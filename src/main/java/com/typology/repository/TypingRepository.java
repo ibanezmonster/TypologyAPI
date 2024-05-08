@@ -17,5 +17,6 @@ import com.typology.entity.entry.Typing;
 public interface TypingRepository extends JpaRepository<Typing, Long>
 {
 	@Query(value = FIND_ALL_OF_USER_TYPINGS)
+	//Optional<List<Typing>> viewAllOfMyTypings(@Param("yname") String typistName);
 	Optional<List<Typing>> viewAllOfMyTypings(@Param("yname") String typistName);
 }

@@ -44,7 +44,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 //@Builder
 @Entity
-@Table(name = "entry")
+//@Table(name = "Entry")
 //@NamedQueries(value = {
 //				@NamedQuery(name = "find_by_name", query = FIND_ENTRY_BY_NAME)
 				//@NamedQuery(name = "query_jpql", query = EnneagramQuery.GET_ENNEAGRAM_CORE_TYPE_ALL_RESULTS)
@@ -61,11 +61,11 @@ public class Entry
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	
-//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//	@JoinColumn(name="enneagram_typing_consensus_id", referencedColumnName = "id")
-//	private EnneagramTypingConsensus enneagramTypingConsensus;
-//
-//	
-//	@OneToMany(mappedBy="entry", fetch = FetchType.LAZY)
-//	private List<Typing> typings = new ArrayList<>();
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name="enneagram_typing_consensus_id", referencedColumnName = "id")
+	private EnneagramTypingConsensus enneagramTypingConsensus;
+
+	
+	@OneToMany(mappedBy="entry", fetch = FetchType.LAZY)
+	private List<Typing> typings = new ArrayList<>();
 }

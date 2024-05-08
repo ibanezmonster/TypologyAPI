@@ -113,8 +113,9 @@ CREATE TABLE Entry (
 
 CREATE TABLE Test_Mappings (
     id INT NOT NULL PRIMARY KEY IDENTITY,
-    entry_id INT NOT NULL,
-    FOREIGN KEY (entry_id) REFERENCES Entry(id)
+    name VARCHAR(255) NOT NULL
+    --entry_id INT NOT NULL,
+    --FOREIGN KEY (entry_id) REFERENCES Entry(id)
 );
 
 CREATE TABLE Enneagram_Typing (

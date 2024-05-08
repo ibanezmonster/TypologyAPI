@@ -57,11 +57,10 @@ public class TypingRepositoryITests extends ContainerStartup
 		//mysterySystem.setId(50);
 		mysterySystem.setName("Mystery System");
 		
-		typing = Typing.builder()
-					   .typist(typist)
-					   .entry(entry)
-					   .typologySystem(mysterySystem)
-					   .build();
+		typing = new Typing();
+		typing.setTypist(typist);
+		typing.setEntry(entry);
+		typing.setTypologySystem(mysterySystem);				
 	}
 	
 	
@@ -87,18 +86,18 @@ public class TypingRepositoryITests extends ContainerStartup
 	
 	@DisplayName("JUnit test for saving typist operation and finding by name")
     @Test
-    public void givenTypist_whenSave_thenReturnSavedTypistByName(){
+    public void givenTyping_whenSave_thenReturnSavedTypingByName(){
 
         //given
 		mysterySystem2 = new TypologySystem();
 		mysterySystem2.setName("Mystery System 2");
 		
-		Typing typing2 = Typing.builder()
-							   .typist(typist)
-							   .entry(entry)
-							   .typologySystem(mysterySystem2)
-							   .build();
+		Typing typing2 = new Typing();
 		
+		typing2 = new Typing();
+		typing2.setTypist(typist);
+		typing2.setEntry(entry);
+		typing2.setTypologySystem(mysterySystem2);		
 		
 		typistRepository.save(typist);
 		entryRepository.save(entry);
@@ -118,5 +117,41 @@ public class TypingRepositoryITests extends ContainerStartup
         // then
         assertThat(foundTypings).isNotNull();
         assertThat(foundTypings.get().size()).isEqualTo(2);
+    }
+	
+	
+	
+	
+	
+	@DisplayName("JUnit test for returning nothing when finding by nonexistent typings by name")
+    @Test
+    public void givenNonexistentTypings_whenViewAllOfMyTypings_thenReturnNothing(){
+
+        //given
+		mysterySystem2 = new TypologySystem();
+		mysterySystem2.setName("Mystery System 2");
+		
+		Typing typing2 = new Typing();
+		
+		typing2 = new Typing();
+		typing2.setTypist(typist);
+		typing2.setEntry(entry);
+		typing2.setTypologySystem(mysterySystem2);		
+		
+		typistRepository.save(typist);
+		entryRepository.save(entry);
+		typologySystemRepository.save(mysterySystem);
+		typologySystemRepository.save(mysterySystem2);
+
+		//don't save these
+		//typingRepository.save(typing);		
+		//typingRepository.save(typing2);
+
+		
+        //when  	
+		Optional<List<Typing>> foundTypings = typingRepository.viewAllOfMyTypings(typing.getTypist().getName());
+
+        // then
+        assertThat(foundTypings.get().size()).isZero();
     }
 }

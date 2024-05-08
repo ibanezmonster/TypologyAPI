@@ -22,10 +22,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@JsonIgnoreProperties({"entry", "createdTimestamp", "updatedTimestamp"})
+//@Builder
+@NoArgsConstructor
+@JsonIgnoreProperties({"createdTimestamp", "updatedTimestamp"})
 @Entity
 public class Typing
 {	
@@ -38,11 +40,11 @@ public class Typing
 	@JoinColumn(name="entry_id")
 	private Entry entry;
 	
-	@ManyToOne(fetch=FetchType.EAGER) //unidirectional  //crashes here if LAZY
+	@ManyToOne(fetch=FetchType.LAZY) //unidirectional  
 	@JoinColumn(name="typist_id")
 	private Typist typist;
 	
-	@ManyToOne(fetch=FetchType.EAGER) //unidirectional	//crashes here if LAZY
+	@ManyToOne(fetch=FetchType.EAGER) //unidirectional	//crashes here if LAZY //experiment with different proxy class settings to enable lazy loading
 	@JoinColumn(name="typology_system_id")
 	private TypologySystem typologySystem;
 

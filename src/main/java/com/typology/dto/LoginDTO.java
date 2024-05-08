@@ -1,6 +1,7 @@
 package com.typology.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 
 //public record LoginDTO(@NotBlank String name, 
@@ -10,6 +11,7 @@ import lombok.Data;
 
 
 @Data
+@Builder
 public class LoginDTO
 {
 	private @NotBlank String name; 

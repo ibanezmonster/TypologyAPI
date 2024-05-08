@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.typology.entity.TestEntity;
+import com.typology.entity.TestMappingsEntity;
 import com.typology.entity.entry.Entry;
 import com.typology.service.AdminService;
-import com.typology.service.TestService;
+import com.typology.service.TestMappingsService;
 
 @RestController
 @RequestMapping("/test")		
-public class TestController
+public class TestMappingsController
 {
 	@Autowired
-	private TestService testService;	
+	private TestMappingsService testService;	
 
 	
 	@PostMapping("/makenew")
-	public ResponseEntity<String> addNewEntry(@RequestBody TestEntity testBody){
-		TestEntity testEntity = null;
+	public ResponseEntity<String> addNewEntry(@RequestBody TestMappingsEntity testBody){
+		TestMappingsEntity testEntity = null;
 		
 		try {
 			testEntity = testService.saveTestEntity(testBody);

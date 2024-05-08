@@ -49,9 +49,9 @@ public class AdminServiceImpl implements AdminService
 			//if user doesn't exist, throw error
 			AppUser appUserDB = appUserRepository.findByName(name)
 												 .orElseThrow(() -> {
-							                            NotFoundException notFoundException = new NotFoundException("User with name \'" + name + "\' not found");
-							                            return notFoundException;
-							                        		  });
+											                            NotFoundException notFoundException = new NotFoundException("User with name \'" + name + "\' not found");
+											                            return notFoundException;
+											                        });
 											                    	
 			String foundName = appUserDB.getName();
 			String oldRole = appUserDB.getRole();			
@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService
 			}
 			
 			//update to new role			
-			appUserDB.setRole(newRole.toUpperCase());
+			appUserDB.setRole(newRole.toUpperCase().strip());
 			appUserRepository.save(appUserDB);
 			
 			response = ResponseEntity.status(HttpStatus.OK)
@@ -71,7 +71,7 @@ public class AdminServiceImpl implements AdminService
 		}
 		
 		catch(NotFoundException ex) {
-            LOGGER.error("Error getting customer {}", name, ex);
+            LOGGER.error("Error getting user {}", name, ex);
 			response = ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                				 .body(ExMessageBody.MSG_PREFIX + ex.getMessage());
 		}
@@ -105,16 +105,16 @@ public class AdminServiceImpl implements AdminService
 			String newStatusSetting = appUser.getStatus();
 			
 			//handle bad input for enabled
-			if(!EnumStringComparison.isStringInEnum(newStatusSetting, AppUserStatus.class)){
+			if(newStatusSetting.isBlank() || newStatusSetting.isEmpty() || !EnumStringComparison.isStringInEnum(newStatusSetting.toUpperCase(), AppUserStatus.class)){
 				throw new IllegalArgumentException();
 			}
 			
 			//update to new status
-			appUserDB.setStatus(newStatusSetting);
+			appUserDB.setStatus(newStatusSetting.toLowerCase().strip());
 			appUserRepository.save(appUserDB);
 			
 			response = ResponseEntity.status(HttpStatus.OK)
-					 .body("For user: " + foundName + "," + " old status setting of: \'" + oldStatusSetting + "\' is updated to: " + "\'" + newStatusSetting);
+					 				 .body("For user: " + foundName + "," + " status of: \'" + oldStatusSetting + "\' is updated to: " + "\'" + newStatusSetting + "\'.");
 		}
 		
 		catch(NoSuchElementException ex) {

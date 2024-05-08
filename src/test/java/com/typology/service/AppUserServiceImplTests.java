@@ -129,4 +129,25 @@ public class AppUserServiceImplTests
 	    // then
 	    assertThat(foundAppUser).isNull();  	
 	}
+	
+	
+	
+	
+	
+	
+	// JUnit test for saveAppUser method
+	@DisplayName("JUnit service test for find app user by id (negative scenario)")
+	@Test
+	public void givenEmptyAppUserObject_whenSave_thenFindAppUserById(){
+		
+	    // given
+	    given(appUserRepository.findById(appUser.getId()))
+	    					   .willReturn(Optional.empty());
+	    	    
+	    // when
+	    AppUser foundAppUser = appUserService.findById(appUser.getId());
+	            
+	    // then
+	    assertThat(foundAppUser).isNull();  	
+	}
 }
