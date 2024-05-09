@@ -126,4 +126,23 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
         // then
 		assertThat(foundEnneagramTyping.isEmpty());				
     }
+	
+	
+	
+	
+	@DisplayName("JUnit test for deleting enneagram typing by id")
+    @Test
+    public void givenEnneagramTyping_whenDeleteById_thenReturnNull(){
+
+        //given
+		entryRepository.save(entry);
+		typistRepository.save(typist);
+		enneagramTypingRepository.save(enneagramTyping);
+    	
+        //when 
+		enneagramTypingRepository.deleteById(enneagramTyping.getId());
+		
+        // then
+		assertThat(enneagramTypingRepository.findById(enneagramTyping.getId())).isEmpty();
+    }
 }

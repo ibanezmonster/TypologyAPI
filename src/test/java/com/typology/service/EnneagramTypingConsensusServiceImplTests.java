@@ -46,10 +46,10 @@ public class EnneagramTypingConsensusServiceImplTests
 	
 	
 	
-	 // JUnit test for saveAppUser method
+	// JUnit test for saveAppUser method
 	@DisplayName("JUnit service test for save enneagram typing consensus")
 	@Test
-	public void givenAppUserObject_whenSave_thenReturnSavedAppUser(){
+	public void givenEnneagramTypingConsensus_whenSave_thenReturnEnneagramTypingConsensus(){
 		
 	    // given
 	    given(enneagramTypingConsensusRepository.save(enneagramTypingConsensus))
@@ -61,5 +61,23 @@ public class EnneagramTypingConsensusServiceImplTests
 	    // then
 	    assertThat(savedEnneagramTypingConsensus).isNotNull();
 	    assertThat(savedEnneagramTypingConsensus.getCoreType()).isEqualTo(enneagramTypingConsensus.getCoreType());    	
+	}
+	
+	
+	
+	// JUnit test for saveAppUser method
+	@DisplayName("JUnit service test for save enneagram typing consensus (negative scenario)")
+	@Test
+	public void givenNullEnneagramTypingConsensus_whenSave_thenReturnNothing(){
+		
+	    // given
+	    given(enneagramTypingConsensusRepository.save(enneagramTypingConsensus))
+	    					   					.willReturn(null);
+	    
+	    // when                
+	    EnneagramTypingConsensus savedEnneagramTypingConsensus = enneagramTypingConsensusService.saveEnneagramTypingConsensus(enneagramTypingConsensus);
+	            
+	    // then
+	    assertThat(savedEnneagramTypingConsensus).isNull();    	
 	}
 }

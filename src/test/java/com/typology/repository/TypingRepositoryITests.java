@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
+import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.TypologySystem;
 import com.typology.entity.user.Typist;
 import com.typology.integration.ContainerStartup;
@@ -86,7 +87,7 @@ public class TypingRepositoryITests extends ContainerStartup
 	
 	@DisplayName("JUnit test for saving typist operation and finding by name")
     @Test
-    public void givenTyping_whenSave_thenReturnSavedTypingByName(){
+    public void givenTyping_whenViewAllOfMyTypings_thenReturnSavedTypingByName(){
 
         //given
 		mysterySystem2 = new TypologySystem();

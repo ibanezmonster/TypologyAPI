@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 
 @RestController
 //@PropertySource("classpath:Versioning.properties")
-@RequestMapping("/api/${api.version}/profile")
+@RequestMapping("/api/${api.version}")
 public class TypingController
 {
 	@Autowired
@@ -39,27 +39,27 @@ public class TypingController
 	}
 	
 	//view your own typing for an entry, using one typology system
-	@GetMapping("/{entryName}/my_typing/{typologySystem}")
+	@GetMapping("/profile/{entryName}/my_typing/{typologySystem}")
 	public ResponseEntity<?> viewTyping(@PathVariable String entryName, @PathVariable String typologySystem) throws JsonProcessingException{		
 		return typingService.viewTyping(entryName, typologySystem);
 	}
 	
 	
 	//add your typing for an entry, using one typology system
-	@PostMapping("/{entryName}/vote/{typologySystem}")
+	@PostMapping("/profile/{entryName}/vote/{typologySystem}")
 	public ResponseEntity<String> addTyping(@PathVariable String entryName, @PathVariable String typologySystem, @Valid @RequestBody EnneagramTyping enneagramTyping){		
 		return typingService.addTyping(entryName, typologySystem, enneagramTyping);
 	}
 	
 	
 	//update your typing for an entry, using one typology system
-	@PatchMapping("/{entryName}/vote/{typologySystem}")
+	@PatchMapping("/profile/{entryName}/vote/{typologySystem}")
 	public ResponseEntity<String> updateTyping(@PathVariable String entryName, @PathVariable String typologySystem, @RequestBody EnneagramTyping enneagramTyping){		
 		return typingService.updateTyping(entryName, typologySystem, enneagramTyping);
 	}
 	
 	//delete your typing
-	@DeleteMapping("/{entryName}/my_typing/{typologySystem}")
+	@DeleteMapping("/profile/{entryName}/my_typing/{typologySystem}")
 	public ResponseEntity<HttpStatus> deleteTyping(@PathVariable String entryName, @PathVariable String typologySystem) {
 		return typingService.deleteTyping(entryName, typologySystem);
 	}

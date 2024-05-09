@@ -1,5 +1,7 @@
 package com.typology.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +18,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	AppUserRepository appUserRepository;
 	
+	private final static Logger LOGGER = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
+
+	
     public UserDetailsServiceImpl(AppUserRepository appUserRepository)
 	{
 		this.appUserRepository = appUserRepository;
@@ -24,8 +29,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-    	AppUser user = appUserRepository.findByName(username)
-    	        				  	 	.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+		AppUser user;
+		
+		try {
+			user = appUserRepository.findByName(username)
+	        				  	 	.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+		}
+		
+		catch(UsernameNotFoundException e) {
+			LOGGER.info("User Not Found with username: " + username);
+			return null;
+		}
 
     	return UserDetailsImpl.build(user);
     }

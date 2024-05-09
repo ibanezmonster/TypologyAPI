@@ -3,6 +3,8 @@ package com.typology.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,8 @@ public class EntryServiceImpl implements EntryService
 	@Autowired
 	EntryRepository entryRepository;
 
-	
+	private final static Logger LOGGER = LoggerFactory.getLogger(EntryServiceImpl.class);
+
 	
 	public EntryServiceImpl(EntryRepository entryRepository) {
 		this.entryRepository = entryRepository;
@@ -61,8 +64,18 @@ public class EntryServiceImpl implements EntryService
 	
 	@Override
     public Entry getEntry(String name) {
-		Entry entry = this.entryRepository.findByName(name)
-										  .orElseThrow(ResourceNotFoundException::new);
+		Entry entry;
+		
+		try {
+			entry = this.entryRepository.findByName(name)
+					  .orElseThrow(ResourceNotFoundException::new);	
+		}
+		
+		catch(ResourceNotFoundException e) {
+			LOGGER.info("Entry not found");
+			return null;
+		}
+		
 				
 		return entry;
     }

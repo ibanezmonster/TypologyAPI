@@ -86,4 +86,22 @@ public class InfoServiceImplTests
 		assertThat(foundTypists).isNotNull();
 	    assertThat(foundTypists).size().isEqualTo(typists.size());
 	}
+	
+	
+	
+	
+	@DisplayName("JUnit service test for get list of typists (negative scenario)")
+	@Test
+	public void givenNullListOfTypists_whenGetListOfTypistsFromInfoService_thenReturnNothing(){
+		
+	    // given
+		given(typistRepository.findAll())
+	    					  .willReturn(null);
+	    
+	    // when                
+		List<Typist> foundTypists = infoService.getTypists();
+	            
+	    // then
+		assertThat(foundTypists).isNull();
+	}
 }

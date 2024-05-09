@@ -61,6 +61,23 @@ public class EntryServiceImplTests
 	
 	
 	
+	@DisplayName("JUnit service test for save entry (negative scenario)")
+	@Test
+	public void givenNullEntryObject_whenSave_thenReturnNothing(){
+		
+	    // given
+	    given(entryRepository.save(entry))
+	    					 .willReturn(null);
+	    
+	    // when                
+	    Entry savedEntry = entryService.saveEntry(entry);
+	            
+	    // then
+	    assertThat(savedEntry).isNull();	
+	}
+	
+	
+	
 	@DisplayName("JUnit service test for get entry by name")
 	@Test
 	public void givenEntryObject_whenSave_thenGetEntryByName(){
@@ -75,5 +92,23 @@ public class EntryServiceImplTests
 	    // then
 	    assertThat(retrievedEntry).isNotNull();
 	    assertThat(retrievedEntry.getName()).isEqualTo(entry.getName());    	
+	}
+	
+	
+	
+	
+	@DisplayName("JUnit service test for find entry by name (negative scenario)")
+	@Test
+	public void givenNullEntryObject_whenFindByName_thenReturnNothing(){
+		
+	    // given
+		given(entryRepository.findByName(entry.getName()))
+		 					 .willReturn(Optional.empty());
+	    
+	    // when                
+	    Entry savedEntry = entryService.getEntry(entry.getName());
+	            
+	    // then
+	    assertThat(savedEntry).isNull();	
 	}
 }

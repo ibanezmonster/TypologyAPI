@@ -64,4 +64,21 @@ public class UserDetailsServiceImplTests
 	    assertThat(savedAppUserDetails).isNotNull();
 	    assertThat(savedAppUserDetails.getUsername()).isEqualTo(appUser.getName());    	
 	}
+	
+	
+	
+	@DisplayName("JUnit service test for save entry (negative scenario)")
+	@Test
+	public void givenNullEntryObject_whenSave_thenReturnNothing(){
+		
+	    // given
+	    given(appUserRepository.findByName(appUser.getName()))
+	    					   .willReturn(Optional.empty());
+	    
+	    // when                
+	    UserDetails savedAppUserDetails = userDetailsService.loadUserByUsername(appUser.getName());
+	            
+	    // then
+	    assertThat(savedAppUserDetails).isNull();    	
+	}
 }

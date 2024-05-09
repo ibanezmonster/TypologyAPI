@@ -69,4 +69,24 @@ public class EnneagramTypingServiceImplTests
 	    assertThat(savedEnneagramTyping).isNotNull();
 	    assertThat(savedEnneagramTyping.getCoreType()).isEqualTo(enneagramTyping.getCoreType());    	
 	}
+	
+	
+	
+	
+	
+	 // JUnit test for saveAppUser method
+	@DisplayName("JUnit service test for save enneagram typing (negative scenario)")
+	@Test
+	public void givenNullEnneagramTypingObject_whenSave_thenReturnNothing(){
+		
+	    // given
+	    given(enneagramTypingRepository.save(enneagramTyping))
+	    					   		   .willReturn(null);
+	    
+	    // when                
+	    EnneagramTyping savedEnneagramTyping = enneagramTypingService.saveEnneagramTyping(enneagramTyping);
+	            
+	    // then
+	    assertThat(savedEnneagramTyping).isNull();    	
+	}
 }
