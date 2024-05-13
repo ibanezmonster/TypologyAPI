@@ -65,10 +65,6 @@ public class TypingControllerITests extends ContainerStartup
        
     @Autowired
     //@Mock
-    private AuthoritiesRepository authoritiesRepository;
-    
-    @Autowired
-    //@Mock
     private EntryRepository entryRepository;
     
     @Autowired
@@ -87,17 +83,14 @@ public class TypingControllerITests extends ContainerStartup
     //@Mock
 	private TypingRepository typingRepository;
     
-    
-    @Autowired
-   	private ModelMapper modelMapper;
-    
-    
     @Mock
     //@InjectMocks
+    //@Autowired
 	private TypingServiceImpl typingService;
     
     @Mock
     //@InjectMocks
+    //@Autowired
 	private EntryServiceImpl entryService;
     
 	
@@ -132,11 +125,34 @@ public class TypingControllerITests extends ContainerStartup
 		entry.setName("Somecharacter");					
 		
 			//using pre-populated value
+			//not saving in database, need to change if updating startup script
 		enneagramSystem = new TypologySystem();
 		enneagramSystem.setId(1);
 		enneagramSystem.setName("enneagram");
 		
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(3);
+		enneagramTypingConsensus.setWing(2);
 		
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
+
+		
+		//save entry
+		typistRepository.save(typist);
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		entryRepository.save(entry);
+		
+//		typing = new Typing();
+//		typing.setTypist(typist);
+//		typing.setEntry(entry);
+//		typing.setTypologySystem(enneagramSystem); 	
+//		
+		
+		//enneagramTypingRepository.save(enneagramTyping);
+		//typingRepository.save(typing);
+		
+		//create enneagram typing
 		enneagramTyping = new EnneagramTyping();
 		enneagramTyping.setCoreType(7);
 		enneagramTyping.setWing(8);
@@ -152,26 +168,9 @@ public class TypingControllerITests extends ContainerStartup
 		enneagramTyping.setOverlay(369);
 		enneagramTyping.setEntry(entry);
 		enneagramTyping.setTypist(typist);	
-		
-		enneagramTypingConsensus = new EnneagramTypingConsensus();
-		enneagramTypingConsensus.setCoreType(3);
-		enneagramTypingConsensus.setWing(2);
-		
-		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
-
-		typing = new Typing();
-		typing.setTypist(typist);
-		typing.setEntry(entry);
-		typing.setTypologySystem(enneagramSystem); 	
-		
-		typistRepository.save(typist);
-		entryRepository.save(entry);
-		enneagramTypingRepository.save(enneagramTyping);
-		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
-		typingRepository.save(typing);
     	
     	// when
-		ResultActions response = mockMvc.perform(post("/api/v1/profile/{entryName}/vote/{typologySystem}", entry.getName(), "enneagram")	
+		ResultActions response = mockMvc.perform(post("/api/v1/profile/{entryName}/vote/{typologySystem}", entry.getName(), enneagramSystem.getName())	
 							            .contentType(MediaType.APPLICATION_JSON)	
 							            .characterEncoding("UTF-8")
 							            .content(objectMapper.writeValueAsString(enneagramTyping)));						
@@ -294,6 +293,7 @@ public class TypingControllerITests extends ContainerStartup
 		enneagramTypingConsensus.setWing(2);
 		
 		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
 
 		typing = new Typing();
 		typing.setTypist(typist);
@@ -364,6 +364,7 @@ public class TypingControllerITests extends ContainerStartup
 		enneagramTypingConsensus.setWing(2);
 		
 		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
 
 		typing = new Typing();
 		typing.setTypist(typist);
@@ -377,25 +378,101 @@ public class TypingControllerITests extends ContainerStartup
 		typingRepository.save(typing);		
 		
     	// when
-		ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", entry.getName(), "enneagram")	
-		//ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", "test123", "enneagram")
+		ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", entry.getName(), enneagramSystem.getName())	
 							            .contentType(MediaType.APPLICATION_JSON)	
 							            .characterEncoding("UTF-8"));
-							            //.content(objectMapper.writeValueAsString(enneagramTyping)));						
 		
 	    // then    	
 	    response.andDo(print())
-	            .andExpect(status().isOk());
-	            //.andExpect(jsonPath("$.firstName", is(updatedEmployee.getFirstName()));
-	            //.andExpect(content().string("For entry: " + entry.getName() + ", " + "typing is updated"));
+	            .andExpect(status().isOk())
+	            .andExpect(jsonPath("$.coreType", is(enneagramTyping.getCoreType())))
+	            .andExpect(jsonPath("$.instinctStack", is(enneagramTyping.getInstinctStack())));
     }
     
     
     
     
-    //testing view typing 404
-    //ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", "nonexistent", "enneagram")
+    
+    @Test
+    @WithMockUser(username = "test", password = "test", roles = {"USER"})
+    public void givenNoEnneagramTypingForEntry_whenViewTyping_thenReturnEmpty() throws Exception{
 
+    	//given
+    	typist = new Typist();
+		typist.setName("Newtypist");
+		
+		entry = new Entry();		
+		entry.setName("Somecharacter");					
+		
+			//using pre-populated value
+		enneagramSystem = new TypologySystem();
+		enneagramSystem.setId(1);
+		enneagramSystem.setName("enneagram");
+		
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(3);
+		enneagramTypingConsensus.setWing(2);
+		
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
+
+		typistRepository.save(typist);
+		entryRepository.save(entry);
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		
+    	// when
+		ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", entry.getName(), enneagramSystem.getName())	
+							            .contentType(MediaType.APPLICATION_JSON)	
+							            .characterEncoding("UTF-8"));
+		
+	    // then    	
+	    response.andDo(print())
+	            .andExpect(status().isNotFound())
+	            .andExpect(content().string("Typing for: " + entry.getName() + " not found."));;
+    }
+    
+    
+    
+    
+    
+    
+    @Test
+    @WithMockUser(username = "test", password = "test", roles = {"USER"})
+    public void givenNonexistentEntry_whenViewTyping_thenReturn404NotFound() throws Exception{
+
+    	//given
+    	typist = new Typist();
+		typist.setName("Newtypist");
+		
+		entry = new Entry();		
+		entry.setName("Somecharacter");					
+		
+			//using pre-populated value
+		enneagramSystem = new TypologySystem();
+		enneagramSystem.setId(1);
+		enneagramSystem.setName("enneagram");
+		
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(3);
+		enneagramTypingConsensus.setWing(2);
+		
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
+
+		typistRepository.save(typist);
+		//entryRepository.save(entry);	//don't save entry
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		
+    	// when
+		ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}/my_typing/{typologySystem}", entry.getName(), enneagramSystem.getName())	
+							            .contentType(MediaType.APPLICATION_JSON)	
+							            .characterEncoding("UTF-8"));
+		
+	    // then    	
+	    response.andDo(print())
+	            .andExpect(status().isNotFound());
+    }
+    
     
     
     
@@ -437,6 +514,7 @@ public class TypingControllerITests extends ContainerStartup
 		enneagramTypingConsensus.setWing(2);
 		
 		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
 
 		typing = new Typing();
 		typing.setTypist(typist);
@@ -453,9 +531,8 @@ public class TypingControllerITests extends ContainerStartup
 		ResultActions response = mockMvc.perform(delete("/api/v1/profile/{entryName}/my_typing/{typologySystem}", entry.getName(), "enneagram")	
 							            .contentType(MediaType.APPLICATION_JSON)	
 							            .characterEncoding("UTF-8"));						
-//		assertThat(1).isEqualTo(1);
 		
-//	    // then    	
+	    // then    	
 	    response.andDo(print())
 	            .andExpect(status().isNoContent());
     }
@@ -511,6 +588,7 @@ public class TypingControllerITests extends ContainerStartup
 		enneagramTypingConsensus.setWing(2);
 		
 		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
 
 		typing = new Typing();
 		typing.setTypist(typist);
@@ -578,7 +656,7 @@ public class TypingControllerITests extends ContainerStartup
 		typingList.add(typing2);
 		
     	// when
-		ResultActions response = mockMvc.perform(get("/api/v1/profile/my_typings")	
+		ResultActions response = mockMvc.perform(get("/api/v1/my_typings")	
 							            .contentType(MediaType.APPLICATION_JSON)	
 							            .characterEncoding("UTF-8"));						
 		
@@ -591,5 +669,30 @@ public class TypingControllerITests extends ContainerStartup
 	            .andExpect(jsonPath("$[1].entry", is(typingList.get(1).getEntry().getName())))
 	            .andExpect(jsonPath("$[0].typologySystem", is(typingList.get(0).getTypologySystem().getName())))
 	            .andExpect(jsonPath("$[1].typologySystem", is(typingList.get(1).getTypologySystem().getName())));
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    @Test
+    @WithMockUser(username = "test", password = "test", roles = {"USER"})
+    public void givenNoTypingsForOneTypist_whenViewAllOfMyTypings_thenReturn404EmptyList() throws Exception{
+
+    	//given
+    	
+    	// when
+		ResultActions response = mockMvc.perform(get("/api/v1/my_typings")	
+							            .contentType(MediaType.APPLICATION_JSON)	
+							            .characterEncoding("UTF-8"));						
+		
+	    // then    	
+	    response.andDo(print())
+	            .andExpect(status().isOk())
+	    		.andExpect(content().string("No typings found"));
     }
 }

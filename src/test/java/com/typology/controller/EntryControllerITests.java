@@ -85,4 +85,50 @@ public class EntryControllerITests extends ContainerStartup
               .andExpect(jsonPath("$.name",							
                       is(entry.getName())));	      
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  @Test
+  @WithMockUser(username = "test", password = "test", roles = {"USER"})
+  public void givenNonexistentEntryObject_whenGetEntry_thenReturnNothing() throws Exception{
+
+  	//given
+	EnneagramTypingConsensus enneagramTypingConsensus = EnneagramTypingConsensus.builder()
+																			    .coreType(5)
+																			    .wing(6)
+																			    .tritypeOrdered(592)
+																			    .tritypeUnordered(259)
+																			    .overlay(613)
+																			    .instinctMain("so")
+																			    .instinctStack("so/sp")
+																			    .instinctStackFlow("Contraflow")
+																			    .exInstinctMain("CY")
+																			    .exInstinctStack("CY/EX/SY")
+																			    .exInstinctStackAbbreviation("i369")
+																			    .exInstinctStackFlow("IPS")
+																			    .build();
+	  
+	  Entry entry = new Entry();
+	  entry.setName("Lain");
+	  entry.setCategory(Category.FICTIONAL_CHARACTER);
+	  entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+	  
+	  //not saved, so it doesn't exist
+	  //entryRepository.save(entry);
+	 
+      // when 
+      ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}", entry.getName())	
+							          .contentType(MediaType.APPLICATION_JSON));								
+
+      
+      // then
+      response.andDo(print())										
+              .andExpect(status().isNotFound());
+  }
 }

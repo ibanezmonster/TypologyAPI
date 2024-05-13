@@ -21,7 +21,6 @@ public class ApiExceptionHandler
 	{
 
 		ApiException apiException = new ApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST, ZonedDateTime.now());
-
 		return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
 	}
 
@@ -30,16 +29,16 @@ public class ApiExceptionHandler
 	{
 
 		ApiException apiException = new ApiException(e.getMessage(), e, HttpStatus.NOT_FOUND, ZonedDateTime.now());
-
 		return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
 	}
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-	public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e)
+	public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e)
 	{
-
-		ApiException apiException = new ApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST, ZonedDateTime.now());
-
-		return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
+    	
+		//ApiException apiException = new ApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST, ZonedDateTime.now());
+		//return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
+    	
+		return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
 	}
 }

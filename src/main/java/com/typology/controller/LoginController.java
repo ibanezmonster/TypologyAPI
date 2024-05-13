@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,19 +45,13 @@ public class LoginController
 {
 	
 	@Autowired
-	private AppAuthenticationProvider authentication;
-	
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private AppAuthenticationProvider authenticationProvider;
 
 	@Autowired
 	private JWT jwt;
 
 	private final Logger LOG = Logger.getLogger(SecurityConfig.class.getName());
 
-	
-	@Autowired
-	private AppUserService appUserService; 
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -68,12 +63,10 @@ public class LoginController
 				 produces = {MediaType.APPLICATION_JSON_VALUE}) 
 	public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO){
 		
-		AppUser appUser;
-		Authentication authObj;
-		//AuthenticationManager authenticationManager = null; // = new AuthenticationManager();
+		AppUser appUserLogin = new AppUser();
 		
 		try {
-			appUser = modelMapper.map(loginDTO, AppUser.class);
+			appUserLogin = modelMapper.map(loginDTO, AppUser.class);		
 		}
 		
 		catch(Exception e) {
@@ -82,18 +75,19 @@ public class LoginController
 		}
 		
 		try {
+			
 			//set the user as an Authentication object in the SecurityContextHolder
-			authObj = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(appUser.getName(), appUser.getPwd()));			
-			SecurityContextHolder.getContext().setAuthentication(authObj);
-			
-			//LOG.info("Placed in security context holder: " + SecurityContextHolder.getContext().getAuthentication().toString());				
-			
+			Authentication authObj = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(appUserLogin.getName(), appUserLogin.getPwd()));
+						
+			SecurityContextHolder.getContext().setAuthentication(authObj);  
 			
 			//look up AppUser in database in order to get authorities list, so that it can be stored in JWT
-			AppUser appUserForAuthoritiesLookup = appUserService.getAppUserByName(appUser.getName());		//this is null for some reason
-			//LOG.info("Looking up: " + appUserForAuthoritiesLookup.getId() + ", authorities are: " + appUserForAuthoritiesLookup.getAuthorities().toString());
-			
-			UserDetailsImpl userDetails = UserDetailsImpl.build(appUserForAuthoritiesLookup);
+			LOG.info("Placed in security context holder: " + SecurityContextHolder.getContext().getAuthentication().toString());	
+			LOG.info("For app user: " + authObj.getName() + ", authorities are: " + authObj.getAuthorities());
+
+			//issue JWT
+			AppUser appUserDetails = authenticationProvider.getAppUser();
+			UserDetailsImpl userDetails = UserDetailsImpl.build(appUserDetails);
 			ResponseCookie jwtCookie = jwt.generateJwtCookie(userDetails);		    		    
 					    
 			return ResponseEntity.ok()
@@ -102,8 +96,15 @@ public class LoginController
 								 .body("Successful login");
 		}
 		
+		
+		catch(IllegalArgumentException ex) {
+			return new ResponseEntity<HttpStatus>(HttpStatus.NOT_FOUND);
+		}
+		
 		catch(BadCredentialsException ex) {
-			return new ResponseEntity<HttpStatus>(HttpStatus.UNAUTHORIZED);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+								 .body(ex.getMessage()); 
+					//ResponseEntity<HttpStatus>(HttpStatus.UNAUTHORIZED);
 		}		
 	}
 }

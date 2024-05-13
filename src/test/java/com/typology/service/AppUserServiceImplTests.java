@@ -143,11 +143,11 @@ public class AppUserServiceImplTests
 	    					   .willReturn(Optional.of(appUser));
 	    	    
 	    // when
-	    AppUser foundAppUser = appUserService.getAppUserByName(appUser.getName());
+	    Optional<AppUser> foundAppUser = appUserService.getAppUserByName(appUser.getName());
 	            
 	    // then
 	    assertThat(foundAppUser).isNotNull();
-	    assertThat(foundAppUser.getName()).isEqualTo(appUser.getName());    	
+	    assertThat(foundAppUser.get().getName()).isEqualTo(appUser.getName());    	
 	}
 	
 	
@@ -163,10 +163,10 @@ public class AppUserServiceImplTests
 	    					   .willReturn(Optional.empty());
 	    	    
 	    // when
-	    AppUser foundAppUser = appUserService.getAppUserByName(appUser.getName());
+	    Optional<AppUser> foundAppUser = appUserService.getAppUserByName(appUser.getName());
 	            
 	    // then
-	    assertThat(foundAppUser).isNull();  	
+	    assertThat(foundAppUser).isEmpty();  	
 	}
 	
 	

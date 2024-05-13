@@ -13,8 +13,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.typology.entity.entry.Category;
 import com.typology.entity.entry.Entry;
-import com.typology.entity.typologySystem.EnneagramTyping;
+import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.integration.ContainerStartup;
 
 @DataJpaTest
@@ -25,14 +26,38 @@ public class EntryRepositoryITests extends ContainerStartup
 {
 	@Autowired
 	private EntryRepository entryRepository;
+	
+	@Autowired
+	private EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
+	
 	private Entry entry;
-
+	private EnneagramTypingConsensus enneagramTypingConsensus;
 	
 	@BeforeEach
     public void setup(){
-		entry = new Entry();		
-		entry.setId(789);
+
+		//default enneagram typing consensus needed for foreign key constraint
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(0);
+		enneagramTypingConsensus.setWing(0);
+		enneagramTypingConsensus.setInstinctMain("xx");
+		enneagramTypingConsensus.setInstinctStack("xx");
+		enneagramTypingConsensus.setInstinctStackFlow("xx");
+		enneagramTypingConsensus.setOverlay(000);
+		enneagramTypingConsensus.setTritypeOrdered(000);
+		enneagramTypingConsensus.setTritypeUnordered(000);
+		enneagramTypingConsensus.setExInstinctMain("xx");
+		enneagramTypingConsensus.setExInstinctStack("xx");
+		enneagramTypingConsensus.setExInstinctStackAbbreviation("xx");
+		enneagramTypingConsensus.setExInstinctStackFlow("xx");
+		
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+									
+		
+		entry = new Entry();
 		entry.setName("Some character");
+		entry.setCategory(Category.PERSON);
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
 	}
 	
 	
@@ -42,7 +67,7 @@ public class EntryRepositoryITests extends ContainerStartup
 
         //given
     	
-        //when  			
+        //when  			 
 		Entry savedEntry = entryRepository.save(entry);
 
         // then

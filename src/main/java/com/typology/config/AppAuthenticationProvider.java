@@ -28,35 +28,39 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private AppUser appUser;
+	
 
 	@Override
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException, BadCredentialsException, IllegalArgumentException
 	{
 
 		String username = authentication.getName();
 		String pwd = authentication.getCredentials().toString();
-		AppUser customer = appUserRepository.findByName(username)
-											.orElseThrow(IllegalArgumentException::new);
+		appUser = appUserRepository.findByName(username)
+								   .orElseThrow(IllegalArgumentException::new);
+		
+		if(appUser.getStatus().equals("disabled")) {
+			throw new BadCredentialsException("Account is locked.");
+		}
 		
 		List<GrantedAuthority> authorities = null;
 		
-		try {
-
-			if(passwordEncoder.matches(pwd, customer.getPwd())) {
-				authorities = new ArrayList<>();
-				authorities.add(new SimpleGrantedAuthority(customer.getRole()));
-			}
-
-			else {
-				throw new BadCredentialsException("Invalid password!");
-			}
+		if(passwordEncoder.matches(pwd, appUser.getPwd())) {
+			authorities = new ArrayList<>();
+			authorities.add(new SimpleGrantedAuthority(appUser.getRole()));
 		}
 
-		catch (BadCredentialsException ex) {
-			System.out.println("Invalid username or password");
+		else {
+			throw new BadCredentialsException("Invalid password!");
 		}
-
+		
 		return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
+	}
+	
+	public AppUser getAppUser() {
+		return appUser;
 	}
 
 	@Override
@@ -65,16 +69,16 @@ public class AppAuthenticationProvider implements AuthenticationProvider
 		return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
 	}
 	
-	
-	private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities){
-		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		
-		for(Authority authority:authorities) {
-			grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
-		}
-		
-		return grantedAuthorities;
-	}
+//	
+//	private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities){
+//		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+//		
+//		for(Authority authority:authorities) {
+//			grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+//		}
+//		
+//		return grantedAuthorities;
+//	}
 
 }
 

@@ -53,22 +53,26 @@ public class AdminControllerITests extends ContainerStartup
 	@Autowired
     private MockMvc mockMvc;		
     
-    @InjectMocks
-    private AdminController adminController;
+	@Autowired
+    private PasswordEncoder passwordEncoder;
     
     @MockBean
     private AppUserService appUserService;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @Autowired
+    @Mock
     private AppUserRepository appUserRepository;
-
+    
+	@Mock
+	private EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
+    
+    @InjectMocks
+    private AdminController adminController;
+    
     @Autowired						
     private ObjectMapper objectMapper;
     
-    
+	private EnneagramTypingConsensus enneagramTypingConsensus;
+
     @BeforeEach
    	void setup() {
     	//Typing class error on delete
@@ -81,9 +85,31 @@ public class AdminControllerITests extends ContainerStartup
   @WithMockUser(username = "test", password = "test", roles = {"USER"})
   public void givenNewEnty_whenAddNewEntry_thenReturnSavedEntry() throws Exception{
 
+	  //given		
+	  Entry entry = new Entry();
+	  entry.setName("Lain");
+	  entry.setCategory(Category.ANIME);
+	 
+      // when 
+      ResultActions response = mockMvc.perform(post("/console/add_entry")	
+							          .contentType(MediaType.APPLICATION_JSON)
+    		  						  .content(objectMapper.writeValueAsString(entry)));
+      // then
+      response.andDo(print())										
+              .andExpect(status().isCreated());	      
+  }
+  
+  
+  
+  
+  @Test
+  @WithMockUser(username = "test", password = "test", roles = {"USER"})
+  public void givenNewEnty_whenAddNewEntryButOmitCategory_thenThrowError() throws Exception{
+
 	  //given
 	  Entry entry = new Entry();
 	  entry.setName("Lain");
+
 	 
       // when 
       ResultActions response = mockMvc.perform(post("/console/add_entry")	
@@ -93,8 +119,38 @@ public class AdminControllerITests extends ContainerStartup
       
       // then
       response.andDo(print())										
-              .andExpect(status().isCreated());	      
+              .andExpect(status().isBadRequest());	      
   }
+  
+  
+  
+  
+  
+  @Test
+  @WithMockUser(username = "test", password = "test", roles = {"USER"})
+  public void givenNewEnty_whenAddNewCategoryButOmitName_thenThrowError() throws Exception{
+
+	  //given
+	  Entry entry = new Entry();
+	  entry.setCategory(Category.ANIME);
+
+	 
+      // when 
+      ResultActions response = mockMvc.perform(post("/console/add_entry")	
+							          .contentType(MediaType.APPLICATION_JSON)
+    		  						  .content(objectMapper.writeValueAsString(entry)));								
+
+      
+      // then
+      response.andDo(print())										
+              .andExpect(status().isBadRequest());	      
+  }
+  
+  
+  
+  
+  
+  
   
   
   @Test
@@ -114,7 +170,7 @@ public class AdminControllerITests extends ContainerStartup
 	  
 	  
 	  given(appUserService.getAppUserByName(appUser.getName()))
-		  				  .willReturn(appUser);
+		  				  .willReturn(Optional.of(appUser));
 	  
 	  appUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
 
@@ -151,7 +207,7 @@ public class AdminControllerITests extends ContainerStartup
 	  
 	  
 	  given(appUserService.getAppUserByName(appUser.getName()))
-		  				  .willReturn(appUser);
+		  				  .willReturn(Optional.of(appUser));
 	  
 	  appUser.setStatus("disabled");
 

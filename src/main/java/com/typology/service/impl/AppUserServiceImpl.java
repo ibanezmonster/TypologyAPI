@@ -1,5 +1,6 @@
 package com.typology.service.impl;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,12 @@ public class AppUserServiceImpl implements AppUserService
 
 
 	@Override
-	public AppUser getAppUserByName(String name)
+	public Optional<AppUser> getAppUserByName(String name)
 	{
-		AppUser appUser = null;
+		Optional<AppUser> appUser = null;
 		
 		try {
-			appUser = appUserRepository.findByName(name)
-			 				 		   .orElseThrow(ResourceNotFoundException::new);
+			appUser = appUserRepository.findByName(name);
 		}
 		
 		catch(ResourceNotFoundException e) {

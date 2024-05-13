@@ -89,8 +89,8 @@ CREATE TABLE Typist (
 
 CREATE TABLE Enneagram_Typing_Consensus (
     id INT NOT NULL PRIMARY KEY IDENTITY,
-    core_type INT NOT NULL CHECK(core_type BETWEEN 1 AND 9),
-    wing INT NOT NULL CHECK(wing BETWEEN 1 AND 9),
+    core_type INT NOT NULL CHECK(core_type BETWEEN 0 AND 9),
+    wing INT NOT NULL CHECK(wing BETWEEN 0 AND 9),
     tritype_ordered INT,
     tritype_unordered INT,
     overlay INT,
@@ -106,8 +106,8 @@ CREATE TABLE Enneagram_Typing_Consensus (
 CREATE TABLE Entry (
     id INT NOT NULL PRIMARY KEY IDENTITY,
     name VARCHAR(255) NOT NULL,
-    category VARCHAR(255),
-    enneagram_typing_consensus_id INT UNIQUE,
+    category VARCHAR(255) NOT NULL,
+    enneagram_typing_consensus_id INT UNIQUE NOT NULL,
     FOREIGN KEY (enneagram_typing_consensus_id) REFERENCES Enneagram_Typing_Consensus(id) on delete cascade
 );
 

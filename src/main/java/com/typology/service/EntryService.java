@@ -1,6 +1,8 @@
 package com.typology.service;
 
 
+import java.util.Optional;
+
 import com.typology.entity.entry.Entry;
 
 
@@ -10,7 +12,7 @@ public interface EntryService
 {
 	//basic queries
 
-	Entry getEntry(String name);
+	Optional<Entry> getEntry(String name);
 	Entry saveEntry(Entry entry);
 	//List<Entry> getAllEntries();
 	//void deleteEntry(long id);

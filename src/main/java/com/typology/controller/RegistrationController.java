@@ -2,6 +2,7 @@ package com.typology.controller;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +28,7 @@ import com.typology.entity.user.Authority;
 import com.typology.repository.AppUserRepository;
 import com.typology.repository.AuthoritiesRepository;
 import com.typology.security.AppUserRoles;
+import com.typology.security.ValidPassword;
 
 import jakarta.validation.Valid;
 
@@ -51,11 +54,14 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationDTO registrationDTO) {
-        AppUser savedUser;
+    	
+    	//@ValidPassword- invalid password will throw ApiException.handleMethodArgumentNotValidException
+    	
+        AppUser userToCreate;
         ResponseEntity<String> response = null;
         
         try {
-        	savedUser = modelMapper.map(registrationDTO, AppUser.class);
+        	userToCreate = modelMapper.map(registrationDTO, AppUser.class);
 		}
 		
 		catch(Exception e) {
@@ -64,44 +70,54 @@ public class RegistrationController {
 		}
         
         try {
-        	//save user
-        	String hashedPwd = passwordEncoder.encode(savedUser.getPwd());
+        	//check if user already exists        	
+        	Optional<AppUser> possibleExistingUsername = appUserRepository.findByName(userToCreate.getName());        	        	
         	
-        	savedUser.setPwd(hashedPwd);
-        	savedUser.setRole(AppUserRoles.USER.toString());
-        	savedUser.setRegistrationTimestamp(ZonedDateTime.now());
-        	savedUser.setStatus("enabled");
+        	if(!possibleExistingUsername.isEmpty()) {
+        		return ResponseEntity.status(HttpStatus.CONFLICT)
+       				 				 .body("This user name already exists");        		
+        	}
+        	
+        	
+        	//save user
+        	String hashedPwd = passwordEncoder.encode(userToCreate.getPwd());
+        	
+        	userToCreate.setPwd(hashedPwd);
+        	userToCreate.setRole(AppUserRoles.USER.toString());
+        	userToCreate.setRegistrationTimestamp(ZonedDateTime.now());
+        	userToCreate.setStatus("enabled");
             
-        	savedUser = appUserRepository.save(savedUser);
+        	userToCreate = appUserRepository.save(userToCreate);
+        	
+        	
         	
         	//save authorities
         	//by default, give new user the 'VIEWTYPINGS' authority
         	Authority authority = new Authority();        	
-        	authority.setUser(savedUser);
+        	authority.setUser(userToCreate);
         	authority.setName("VIEWTYPINGS");
+        	
         	authoritiesRepository.save(authority);
         	
-            if (savedUser.getId() > 0) {
-                response = ResponseEntity.status(HttpStatus.CREATED)
-                        				 .body("Given user details are successfully registered");
+        	
+            if (userToCreate.getId() > 0) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        			 .body("Given user details are successfully registered");
             }
             
             
-            //also log the authorities for the newly registered user
-            //authorities list should not be null
-//            System.out.println("Authorities list: " + appUser.getAuthorities());
-//            
-//            Set<GrantedAuthority> authorities = appUser.getAuthorities()
-//													   .stream()
-//													   .map(role -> new SimpleGrantedAuthority(role.getName()))
-//													   .collect(Collectors.toSet());
-//
-//            LOG.info("Granted authorities for newly registered user: " + appUser.getName() + ": " + String.join(",", authorities.toString()));
+            //log the authorities for the newly registered user         
+            Set<GrantedAuthority> authorities = userToCreate.getAuthorities()
+													        .stream()
+													        .map(role -> new SimpleGrantedAuthority(role.getName()))
+													        .collect(Collectors.toSet());
+
+            LOG.info("Granted authorities for newly registered user: " + userToCreate.getName() + ": " + String.join(",", authorities.toString()));
         } 
         
-        catch(DataIntegrityViolationException ex) {
-        	response = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    				 .body("This user name already exists.\nAn exception occured due to " + ex.getMessage());
+        catch(DuplicateKeyException ex) {
+        	response = ResponseEntity.status(HttpStatus.CONFLICT)
+                    				 .body("This user name already exists");
         }
                 
         

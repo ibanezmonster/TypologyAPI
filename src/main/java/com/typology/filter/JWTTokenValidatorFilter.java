@@ -94,17 +94,22 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 		filterChain.doFilter(request, response);
 	}
 
-	// has to be executed for all the APIs except during login operation
+	// has to be executed for all the APIs except during login/register operation
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request)
 	{
-		String path = request.getServletPath();
+		//String path = request.getServletPath();
+		String path = request.getPathInfo();
 		List<String> doNotFilterList = Arrays.asList("/api/" + EnvironmentProperties.getApiVersion() + "/register", 
 													"/api/" + EnvironmentProperties.getApiVersion() + "/login",
 													"/admin",
 													"/h2");
+		//System.out.println("fffffffffffffffffffffffffffffffff " + pathInfo);
+		//return path.startsWith("localhost:8080/login");
+		//return path.startsWith(pathInfo);
 		return doNotFilterList.stream()
 							  .anyMatch(n -> path.startsWith(n));
+							  //.anyMatch(n -> path.startsWith("localhost:8080" + n));
 	}
 
 }

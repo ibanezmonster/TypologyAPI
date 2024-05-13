@@ -63,19 +63,18 @@ public class EntryServiceImpl implements EntryService
 
 	
 	@Override
-    public Entry getEntry(String name) {
-		Entry entry;
+    public Optional<Entry> getEntry(String name) {
+		Optional<Entry> entry;
 		
-		try {
-			entry = this.entryRepository.findByName(name)
-					  .orElseThrow(ResourceNotFoundException::new);	
-		}
-		
-		catch(ResourceNotFoundException e) {
-			LOGGER.info("Entry not found");
-			return null;
-		}
-		
+	//	try {
+			entry = this.entryRepository.findByName(name);	
+//		}
+//		
+//		catch(ResourceNotFoundException e) {
+//			LOGGER.info("Entry not found");
+//			return null;
+//		}
+//		
 				
 		return entry;
     }

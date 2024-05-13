@@ -13,10 +13,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +53,10 @@ public class RegistrationControllerITests extends ContainerStartup
     @Autowired						
     private ObjectMapper objectMapper;
     
-    @Mock
+    @Autowired
     private AppUserRepository appUserRepository;
     
-    @Mock
+    @Autowired
     private AuthoritiesRepository authoritiesRepository;
     
     @Autowired
@@ -71,12 +73,9 @@ public class RegistrationControllerITests extends ContainerStartup
     
     
     @Test
-    @WithMockUser(username = "test", password = "test", roles = {"USER"})
     public void givenRegistrationDTO_whenRegisterAppUser_thenSaveUserAndTheirAuthorities() throws Exception{
 
     	//given
-    	AppUser appUser = new AppUser();
-    	
     	RegistrationDTO registrationDTO = RegistrationDTO.builder()
     													 .name("noob49")
     													 .pwd("Higurashi9549!")
@@ -88,25 +87,81 @@ public class RegistrationControllerITests extends ContainerStartup
 							            .characterEncoding("UTF-8")
 							            .content(objectMapper.writeValueAsString(registrationDTO)));						
 	
-		appUser = modelMapper.map(registrationDTO, AppUser.class);
+	    // then    	
+	    response.andDo(print())
+	            .andExpect(status().isCreated());
+    }
+    
+    
+    
+    
+    
+    
+    
+    @Test
+    public void givenRegistrationDTO_whenRegisterAppUserWithBadPassword_thenReturn400Error() throws Exception{
+
+    	//given
+    	RegistrationDTO registrationDTO = RegistrationDTO.builder()
+    													 .name("noob49")
+    													 .pwd("!")
+    													 .build();
+    	
+    	// when
+		ResultActions response = mockMvc.perform(post("/api/v1/register")	
+							            .contentType(MediaType.APPLICATION_JSON)	
+							            .characterEncoding("UTF-8")
+							            .content(objectMapper.writeValueAsString(registrationDTO)));						   	    	    			
+	    // then    	
+	    response.andDo(print())
+	            .andExpect(status().isBadRequest());
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    @Test
+    public void givenRegistrationDTO_whenRegisterAppUserWithExistingName_thenReturnError() throws Exception{
+
+    	//given
+    	//save app user
+    	AppUser appUser = new AppUser();
+    	
+    	RegistrationDTO registrationDTO = RegistrationDTO.builder()
+    													 .name("noob49")
+    													 .pwd("Higurashi9549!")
+    													 .build();
+    	
+    	appUser = modelMapper.map(registrationDTO, AppUser.class);
 
     	String hashedPwd = passwordEncoder.encode(appUser.getPwd());
     	
     	appUser.setRole(AppUserRoles.USER.toString());
     	appUser.setStatus("enabled");
     	appUser.setPwd(hashedPwd);
+    	
     	appUserRepository.save(appUser);
-	  
-		
+    	
 		Authority authority = new Authority();        	
     	authority.setUser(appUser);
     	authority.setName("VIEWTYPINGS");    		
     	authoritiesRepository.save(authority);
-    	    	    			
+    	
+
+    	
+    	// when
+    	//save same app user that already exists
+		ResultActions response = mockMvc.perform(post("/api/v1/register")	
+							            .contentType(MediaType.APPLICATION_JSON)	
+							            .characterEncoding("UTF-8")
+							            .content(objectMapper.writeValueAsString(registrationDTO)));						
+			    	    	    			
 	    // then    	
-        verify(appUserRepository, times(1)).save(appUser);		
-        verify(authoritiesRepository, times(1)).save(authority);
 	    response.andDo(print())
-	            .andExpect(status().isCreated());
+	            .andExpect(status().isConflict());
     }
 }

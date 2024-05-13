@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.Fetch;
+import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -56,8 +57,11 @@ public class Entry
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonIgnore
 	private long id;
+	
+	@NonNull
 	private String name;
 	
+	@NonNull
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	

@@ -57,7 +57,7 @@ public class TypingServiceImpl implements TypingService
 	TypingRepository typingRepository;
 	
     @Autowired						
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 	
 	@Autowired
 	EnneagramTypingRepository enneagramTypingRepository;
@@ -227,25 +227,28 @@ public class TypingServiceImpl implements TypingService
 		try {
 			typings = typingRepository.viewAllOfMyTypings("Newtypist")
 					  				  .orElseThrow(ResourceNotFoundException::new);
+			
+			//convert to DTO
+			for(Typing typing : typings) {
+				myTypingsDTO.add(new MyTypingsDTO(typing.getEntry().getName(), 
+												  typing.getTypologySystem().getName()));						
+			}
+			
+			objectMapper = new ObjectMapper();
+			
+			
 		}
 		
-		catch(ResourceNotFoundException ex) {
-			LOG.warning("Typings not found");
+		catch(ResourceNotFoundException e) {
+			ResponseEntity.status(HttpStatus.OK)
+			 			  .body("No typings found");
 		}
 		
-		//convert to DTO
-		for(Typing typing : typings) {
-			myTypingsDTO.add(new MyTypingsDTO(typing.getEntry().getName(), 
-											  typing.getTypologySystem().getName()));						
-		}
-		
-		objectMapper = new ObjectMapper();
-		
-		return typings.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND)
-												 .body("No typings found")
-								 : ResponseEntity.status(HttpStatus.OK)
-								 				 .contentType(MediaType.APPLICATION_JSON)
-								 				 .body(objectMapper.writeValueAsString(myTypingsDTO));
+		return myTypingsDTO.isEmpty() ? ResponseEntity.status(HttpStatus.OK)
+												 	  .body("No typings found")
+									  : ResponseEntity.status(HttpStatus.OK)
+												      .contentType(MediaType.APPLICATION_JSON)
+												      .body(objectMapper.writeValueAsString(myTypingsDTO));
 	}
 	
 	

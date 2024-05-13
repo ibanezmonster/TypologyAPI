@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.typology.entity.entry.Category;
 import com.typology.entity.entry.Entry;
+import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.repository.EntryRepository;
 import com.typology.service.impl.EntryServiceImpl;
 
@@ -29,7 +30,7 @@ public class EntryServiceImplTests
 	private EntryServiceImpl entryService;
 	
 	private Entry entry;
-	
+
 	
 	@BeforeEach
 	public void setup(){
@@ -87,11 +88,11 @@ public class EntryServiceImplTests
 	    					 .willReturn(Optional.of(entry));
 	    
 	    // when                
-	    Entry retrievedEntry = entryService.getEntry(entry.getName());
+	    Optional<Entry> retrievedEntry = entryService.getEntry(entry.getName());
 	            
 	    // then
 	    assertThat(retrievedEntry).isNotNull();
-	    assertThat(retrievedEntry.getName()).isEqualTo(entry.getName());    	
+	    assertThat(retrievedEntry.get().getName()).isEqualTo(entry.getName());    	
 	}
 	
 	
@@ -106,9 +107,9 @@ public class EntryServiceImplTests
 		 					 .willReturn(Optional.empty());
 	    
 	    // when                
-	    Entry savedEntry = entryService.getEntry(entry.getName());
+	    Optional<Entry> savedEntry = entryService.getEntry(entry.getName());
 	            
 	    // then
-	    assertThat(savedEntry).isNull();	
+	    assertThat(savedEntry.isEmpty());	
 	}
 }

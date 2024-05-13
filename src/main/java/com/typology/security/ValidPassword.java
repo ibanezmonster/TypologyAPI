@@ -22,4 +22,6 @@ public @interface ValidPassword {
 
     Class<? extends Payload>[] payload() default {};
 
+    public Class<? extends Throwable> targetException() default Exception.class;
+
 }
