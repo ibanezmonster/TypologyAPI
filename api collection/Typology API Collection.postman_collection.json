@@ -1,0 +1,957 @@
+{
+	"info": {
+		"_postman_id": "600dd227-70c6-490a-b0d3-b09065138dd6",
+		"name": "Typology API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29093882"
+	},
+	"item": [
+		{
+			"name": "Register New User",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "123abc",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "noob2",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"noob11\",\r\n    \"pwd\": \"noOb19482!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin Login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJoVk01MzBBdU9Kc3JvQzUtYU42UGpWbjJFeHhFVVNFRTNZWlliNENjLWI4In0.eyJleHAiOjE3MTI1Mzk4ODEsImlhdCI6MTcxMjUzOTU4MSwianRpIjoiMWY5M2NjMzEtMDc2ZC00YTEyLWIwMGMtNWEzZWNkYTNiMzI5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy9UeXBvbG9neUFQSSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0ZDI0ZTZhOS02YjBkLTQ0MzUtYWNjMi0yOTg2ODU2ODYyMzIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJUeXBvbG9neUFQSSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHlwb2xvZ3lhcGkiLCJvZmZsaW5lX2FjY2VzcyIsIkFETUlOIiwidW1hX2F1dGhvcml6YXRpb24iLCJVU0VSIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBhZGRyZXNzIGVtYWlsIiwiY2xpZW50SG9zdCI6IjA6MDowOjA6MDowOjA6MSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiYWRkcmVzcyI6e30sInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10eXBvbG9neWFwaSIsImNsaWVudEFkZHJlc3MiOiIwOjA6MDowOjA6MDowOjEiLCJjbGllbnRfaWQiOiJUeXBvbG9neUFQSSJ9.iMqnBoxQNk2rkgFTyVq3SD-7EUiYnfLQESSowh4EoYcXP43irHK0JSuoyP0Moetx498iHEhgOQegK20S8IdWaryCbbxV_z2RrTMl14tRXcmGzzA4qK3FOnA14MW7NMGgi2FCGZKVj9-Bb1k-_R2J-Ze2UGEXw-s-0a41kHpGeq7AkZctteoUtQnYXXkDAhjDfA4LhiP7gyVCefM1pUE1C3yAq9tMw71LLOunXLCY_ftSmxQ35W4Lru2B0hRobOe0k6V1tKqUQBb15hsEn8QfGGccIXtlV9chIqVhHlfyK7b2ZG5_z9LMSr-X4T0QBil62nfbBvYE-0sF84ON0XeSPA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"admin\",\r\n    \"pwd\": \"Admin9889!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Entry (Admin Logged in)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aG9yaXRpZXMiOiJWSUVXVFlQSU5HUyIsImlhdCI6MTcxNTY1NDU4MSwiZXhwIjoxNzE1Njg0NTgxfQ.yHwYp7L8vSjxdKsoCL83NYy-sVUTaFj8kGZ33onWOeJX2hMOO39rN5yKKVcoS0vidzpObGoOn9nbIW6GWNRzVg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"someonenew1\",\r\n    \"category\": \"Person\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/console/add_entry",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"console",
+						"add_entry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Entry",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aG9yaXRpZXMiOiJWSUVXVFlQSU5HUyIsImlhdCI6MTcxNTY1NDU4MSwiZXhwIjoxNzE1Njg0NTgxfQ.yHwYp7L8vSjxdKsoCL83NYy-sVUTaFj8kGZ33onWOeJX2hMOO39rN5yKKVcoS0vidzpObGoOn9nbIW6GWNRzVg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"someonenew1\",\r\n    \"category\": \"Person\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/newx",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"newx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit User Status (Admin Logged in)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aG9yaXRpZXMiOiJWSUVXVFlQSU5HUyIsImlhdCI6MTcxNTY1NDU4MSwiZXhwIjoxNzE1Njg0NTgxfQ.yHwYp7L8vSjxdKsoCL83NYy-sVUTaFj8kGZ33onWOeJX2hMOO39rN5yKKVcoS0vidzpObGoOn9nbIW6GWNRzVg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"status\": \"disabled\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/console/update_user/noob11/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"console",
+						"update_user",
+						"noob11",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit User Role (Admin Logged in)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6ImFkbWluIiwiYXV0aG9yaXRpZXMiOiJWSUVXVFlQSU5HUyIsImlhdCI6MTcxNTY1NDU4MSwiZXhwIjoxNzE1Njg0NTgxfQ.yHwYp7L8vSjxdKsoCL83NYy-sVUTaFj8kGZ33onWOeJX2hMOO39rN5yKKVcoS0vidzpObGoOn9nbIW6GWNRzVg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{    \r\n    \"role\": \"ADMIN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/console/update_user/noob11/role",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"console",
+						"update_user",
+						"noob11",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6Ik5ld3R5cGlzdCIsImF1dGhvcml0aWVzIjoiVklFV1RZUElOR1MiLCJpYXQiOjE3MTU2NDYxODMsImV4cCI6MTcxNTY3NjE4M30.OyUgX9qhPjTh_eiaIKKaQWe0l4DMYn8TvPS9PNSgttOsjCsm1VagcTrCIEa-KOwsFewMTamkT1dQ3HZigPfBdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"noob11\",\r\n    \"pwd\": \"noOb19482!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get List of all of Principal's Typings",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6Im5vb2I0MSIsImF1dGhvcml0aWVzIjoiVklFV1RZUElOR1MiLCJpYXQiOjE3MTQ3MDc2MzksImV4cCI6MTcxNDczNzYzOX0.6rkHevPDN90t6eZBhT_8or6UaN3ECiJafWFpO3R_qzyDyTw0xYzKBKUR_FpqkPGXZlcRMgJucn1cChcxiTARxg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/my_typings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"my_typings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Enneagram typing for entry",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6Ik5ld3R5cGlzdCIsImF1dGhvcml0aWVzIjoiVklFV1RZUElOR1MiLCJpYXQiOjE3MTU2NDYxODMsImV4cCI6MTcxNTY3NjE4M30.OyUgX9qhPjTh_eiaIKKaQWe0l4DMYn8TvPS9PNSgttOsjCsm1VagcTrCIEa-KOwsFewMTamkT1dQ3HZigPfBdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"coreType\": 8,\r\n    \"wing\": \"7\",\r\n    \"tritypeOrdered\": \"874\",\r\n    \"overlay\": \"2\",\r\n    \"instinctMain\": \"sp\",\r\n    \"instinctStack\": \"sx/sp\",\r\n    \"exInstinctMain\": \"FD\",\r\n    \"exInstinctStack\": \"FD/UN/CY\"    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/test123/vote/enneagram",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"test123",
+						"vote",
+						"enneagram"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Principal's Enneagram typing for entry",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6Ik5ld3R5cGlzdCIsImF1dGhvcml0aWVzIjoiVklFV1RZUElOR1MiLCJpYXQiOjE3MTU2NDYxODMsImV4cCI6MTcxNTY3NjE4M30.OyUgX9qhPjTh_eiaIKKaQWe0l4DMYn8TvPS9PNSgttOsjCsm1VagcTrCIEa-KOwsFewMTamkT1dQ3HZigPfBdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"coreType\": 8,\r\n    \"wing\": \"7\",\r\n    \"tritypeOrdered\": \"874\",\r\n    \"overlay\": \"2\",\r\n    \"instinctMain\": \"sp\",\r\n    \"instinctStack\": \"sx/sp\",\r\n    \"exInstinctMain\": \"FD\",\r\n    \"exInstinctStack\": \"FD/UN/CY\"    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/test123/vote/enneagram",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"test123",
+						"vote",
+						"enneagram"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Principal's Enneagram typing for entry",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJUeXBvbG9neSBBUEkiLCJzdWIiOiJKV1QgVG9rZW4iLCJ1c2VybmFtZSI6Ik5ld3R5cGlzdCIsImF1dGhvcml0aWVzIjoiVklFV1RZUElOR1MiLCJpYXQiOjE3MTU2NDYxODMsImV4cCI6MTcxNTY3NjE4M30.OyUgX9qhPjTh_eiaIKKaQWe0l4DMYn8TvPS9PNSgttOsjCsm1VagcTrCIEa-KOwsFewMTamkT1dQ3HZigPfBdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"coreType\": 8,\r\n    \"wing\": \"7\",\r\n    \"tritypeOrdered\": \"874\",\r\n    \"overlay\": \"2\",\r\n    \"instinctMain\": \"sp\",\r\n    \"instinctStack\": \"sx/sp\",\r\n    \"exInstinctMain\": \"FD\",\r\n    \"exInstinctStack\": \"FD/UN/CY\"    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/test123/vote/enneagram",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"test123",
+						"vote",
+						"enneagram"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Principal's Enneagram Typing for entry",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/profile/test123/my_typing/enneagram",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"profile",
+						"test123",
+						"my_typing",
+						"enneagram"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View My Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJoVk01MzBBdU9Kc3JvQzUtYU42UGpWbjJFeHhFVVNFRTNZWlliNENjLWI4In0.eyJleHAiOjE3MTI2MDk3MTgsImlhdCI6MTcxMjYwOTQxOCwianRpIjoiYjI3NDQ0ZGUtN2RlNC00YWYyLTkxMTMtMzY4YmQ5NWQxYTNmIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MTgwL3JlYWxtcy9UeXBvbG9neUFQSSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0ZDI0ZTZhOS02YjBkLTQ0MzUtYWNjMi0yOTg2ODU2ODYyMzIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJUeXBvbG9neUFQSSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtdHlwb2xvZ3lhcGkiLCJvZmZsaW5lX2FjY2VzcyIsIkFETUlOIiwidW1hX2F1dGhvcml6YXRpb24iLCJVU0VSIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBhZGRyZXNzIGVtYWlsIiwiY2xpZW50SG9zdCI6IjA6MDowOjA6MDowOjA6MSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiYWRkcmVzcyI6e30sInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC10eXBvbG9neWFwaSIsImNsaWVudEFkZHJlc3MiOiIwOjA6MDowOjA6MDowOjEiLCJjbGllbnRfaWQiOiJUeXBvbG9neUFQSSJ9.dXacoKPApodN8Ba--JiyfczgdzJxhAL0GAOJyyYaw7ZQDi6F5nMocVOh9VPkZsnLwggtY3MPGAOmdxLxFadPwIOmnRqNYKcqPosJNURrMdQqavw3zi4ahmF0e2dsKNpu1b6RwWOTUOcrY40_RE84-q1id3-z_A_NWZwE40dI8Ph0tDktl8oouLK183CduHUxISowL6taEUXMGmy2ljMJy00pNyGcLpHshvbPxA-bZuwR3rg5ysrUcL0-6pPZW9TRBY8BTpbhlomgngGgwk2EhjBU7ggwR6jUX5r4HDNfJfpg3gBLnJ1gcGvb8AoZSkfBfDrVllDXBP77niFOea0P-Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/my_profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"my_profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2 Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPI",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "OwMi0uaZWeZBZ7CCau53Sd6FGLDHDJQ9",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid email profile address",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Code Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/token?client_id=TypologyAPIClient&redirect_uri=http://localhost:8080/keycloakredirect&grant_type=authorization_code&client_secret=517be6c3f030469074d2dfbdbe13030bc75deb3b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"token"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPIClient"
+						},
+						{
+							"key": "response_type",
+							"value": "code",
+							"disabled": true
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"disabled": true
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:8080/keycloakredirect"
+						},
+						{
+							"key": "state",
+							"value": "fdSBFfdsyfno",
+							"disabled": true
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code"
+						},
+						{
+							"key": "client_secret",
+							"value": "517be6c3f030469074d2dfbdbe13030bc75deb3b"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Code Request- part 1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "TypologyAPIClient",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "517be6c3f030469074d2dfbdbe13030bc75deb3b",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "grant_type",
+						"value": "authorization_code",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "code",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://localhost:8080/keycloakredirect",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "scope",
+						"value": "openid",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "response_type",
+						"value": "code",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "state",
+						"value": "fdasjfidopasjio",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/auth?client_id=TypologyAPIClient&response_type=code&scope=openid&redirect_uri=http://localhost:8082/keycloakredirect&state=brfebawfeabf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"auth"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPIClient"
+						},
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "scope",
+							"value": "openid"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:8082/keycloakredirect"
+						},
+						{
+							"key": "state",
+							"value": "brfebawfeabf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Code Request- part 2 Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPI",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "OwMi0uaZWeZBZ7CCau53Sd6FGLDHDJQ9",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid email profile address",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Code PKCE Request- part 1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "TypologyAPIClient",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "client_secret",
+						"value": "517be6c3f030469074d2dfbdbe13030bc75deb3b",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "grant_type",
+						"value": "authorization_code",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "code",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://localhost:8080/keycloakredirect",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "scope",
+						"value": "openid",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "response_type",
+						"value": "code",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "state",
+						"value": "fdasjfidopasjio",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/auth?client_id=TypologyAPIClient&response_type=code&scope=openid&redirect_uri=localhost:4200/dashboard&state=brfebawfeabf&code_challenge&code_challenge_method",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"auth"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPIClient"
+						},
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "scope",
+							"value": "openid"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "localhost:4200/dashboard"
+						},
+						{
+							"key": "state",
+							"value": "brfebawfeabf"
+						},
+						{
+							"key": "code_challenge",
+							"value": null
+						},
+						{
+							"key": "code_challenge_method",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Code PKCE Request- part 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPI",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "OwMi0uaZWeZBZ7CCau53Sd6FGLDHDJQ9",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid email profile address",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8180/realms/TypologyAPI/protocol/openid-connect/token?client_id=TypologyAPI&client_secret=DX2ZRhEXqY26rKp9pTjNCcR6ePh78qKd&grant_type=authorization_code&code=aee94c47-21c3-4d73-9599-baa9e20b301d.19361005-ba96-4818-8d6a-3383e0229014.1643fbb2-eecf-4e9b-b6ce-94d7c7c3da3b&redirect_uri=http://localhost:4200/dashboard&code_verifier",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8180",
+					"path": [
+						"realms",
+						"TypologyAPI",
+						"protocol",
+						"openid-connect",
+						"token"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "TypologyAPI"
+						},
+						{
+							"key": "client_secret",
+							"value": "DX2ZRhEXqY26rKp9pTjNCcR6ePh78qKd"
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code"
+						},
+						{
+							"key": "code",
+							"value": "aee94c47-21c3-4d73-9599-baa9e20b301d.19361005-ba96-4818-8d6a-3383e0229014.1643fbb2-eecf-4e9b-b6ce-94d7c7c3da3b"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:4200/dashboard"
+						},
+						{
+							"key": "code_verifier",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

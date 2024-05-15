@@ -2,6 +2,7 @@ package com.typology.entity.typologySystem;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.typology.entity.entry.Entry;
 
 import jakarta.persistence.Column;
@@ -45,7 +46,8 @@ public final class EnneagramTypingConsensus extends TypologySystemTyping
 	private String instinctMain;
 	private String instinctStack;
 	
-	@Column(insertable = false, updatable = false)
+	//@Column(insertable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) 
 	private String instinctStackFlow;
 	
 	
@@ -53,10 +55,12 @@ public final class EnneagramTypingConsensus extends TypologySystemTyping
 	private String exInstinctMain;
 	private String exInstinctStack;
 	
-	@Column(insertable = false, updatable = false)
+	//@Column(insertable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) 
 	private String exInstinctStackAbbreviation;
 	
-	@Column(insertable = false, updatable = false)
+	//@Column(insertable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) 
 	private String exInstinctStackFlow;
 	
 	//@OneToOne(fetch=FetchType.LAZY, mappedBy="consensusEnneagramTyping")

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @MappedSuperclass
-public abstract sealed class TypologySystemTyping permits EnneagramTyping, EnneagramTypingConsensus, AttitudinalPsycheTyping
+public abstract sealed class TypologySystemTyping permits EnneagramTyping, EnneagramTypingDisplay, EnneagramTypingConsensus, AttitudinalPsycheTyping
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

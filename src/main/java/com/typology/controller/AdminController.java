@@ -53,14 +53,18 @@ public class AdminController
 			enneagramTypingConsensus.setCoreType(0);
 			enneagramTypingConsensus.setWing(0);
 			enneagramTypingConsensus.setInstinctMain("xx");
-			enneagramTypingConsensus.setInstinctStack("xx");
-			enneagramTypingConsensus.setInstinctStackFlow("xx");
+			enneagramTypingConsensus.setInstinctStack("xx/xx/xx");
+			enneagramTypingConsensus.setInstinctStackFlow("xxxx");
 			enneagramTypingConsensus.setOverlay(000);
 			enneagramTypingConsensus.setTritypeOrdered(000);
 			enneagramTypingConsensus.setTritypeUnordered(000);
 			enneagramTypingConsensus.setExInstinctMain("xx");
-			enneagramTypingConsensus.setExInstinctStack("xx");
-			enneagramTypingConsensus.setExInstinctStackAbbreviation("xx");
+			enneagramTypingConsensus.setExInstinctStack("xx");			
+			enneagramTypingConsensus.setExInstinctStackAbbreviation("xxx");
+			enneagramTypingConsensus.setExInstinctStackFlow("xxx");
+			
+			//non-database fields
+			enneagramTypingConsensus.setExInstinctStackAbbreviation("000");
 			enneagramTypingConsensus.setExInstinctStackFlow("xx");
 			
 			enneagramTypingConsensusRepository.save(enneagramTypingConsensus);

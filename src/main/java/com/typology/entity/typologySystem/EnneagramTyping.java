@@ -8,6 +8,8 @@ import com.typology.annotation.ValidOrderedTritypeValues;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.user.Typist;
 
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -57,7 +59,7 @@ public final class EnneagramTyping extends TypologySystemTyping
 	@JoinColumn(name="typist_id")
 	private Typist typist;
 	
-	
+	//required fields------------------------------------------------------------------
 	@NotNull
 	@Min(value = 1, message = "Core type must be between 1 and 9")
 	@Max(value = 9, message = "Core type must be between 1 and 9")	
@@ -68,29 +70,34 @@ public final class EnneagramTyping extends TypologySystemTyping
 	@Max(value = 9, message = "Core type must be between 1 and 9")	
 	private int wing;
 	
-	@JsonIgnore
-	private int tritypeOrdered;
 	
-	//@Size(3)
+	//optional fields------------------------------------------------------------------
+	@Column(nullable=true)
 	@ValidOrderedTritypeValues(message = "Tritype value is invalid")
-	private int tritypeUnordered;
-	
+	private int tritypeOrdered;
+		
 	//@Size(max=3)
 	private int overlay;
 	
+
 	//valid input: sp, sx, or so
 	private String instinctMain;
 	
 	//valid input: 
 	private String instinctStack;
 	
-	@JsonIgnore
-	private String instinctStackFlow;
 	private String exInstinctMain;
 	private String exInstinctStack;
 	
+	//purely calculated fields------------------------------------------------------------------
 	@JsonIgnore
-	private String exInstinctStackAbbreviation;
+	private int tritypeUnordered;
+	
+	@JsonIgnore
+	private String instinctStackFlow;
+	
+	@JsonIgnore
+	private int exInstinctStackAbbreviation;
 	
 	@JsonIgnore
 	private String exInstinctStackFlow;

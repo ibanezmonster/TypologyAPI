@@ -14,17 +14,20 @@ import com.typology.entity.user.AppUser;
 @RequestMapping("/api/${api.version}/my_profile")
 public class UserProfileController
 {
-//	@GetMapping
-//	public ResponseEntity<?> viewMyProfile(@AuthenticationPrincipal String userName) {
-//		
-//		return ResponseEntity.status(HttpStatus.OK)
-//							 .body("Viewing profile for: " + userName);		
-//	}
-	
+	//works only in Dev, because security is enabled
 	@GetMapping
-	public ResponseEntity<?> viewMyProfile(@AuthenticationPrincipal User user) {
+	public ResponseEntity<?> viewMyProfile(@AuthenticationPrincipal String userName) {
 		
 		return ResponseEntity.status(HttpStatus.OK)
-							 .body("Viewing profile for: " + user.getUsername());		
+							 .body("Viewing profile for: " + userName);		
 	}
+	
+	
+	//works only in testing, because security is disabled
+//	@GetMapping
+//	public ResponseEntity<?> viewMyProfile(@AuthenticationPrincipal User user) {
+//		
+//		return ResponseEntity.status(HttpStatus.OK)
+//							 .body("Viewing profile for: " + user.getUsername());		
+//	}
 }

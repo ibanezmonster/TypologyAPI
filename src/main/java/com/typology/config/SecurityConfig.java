@@ -152,7 +152,7 @@ public class SecurityConfig {
 					     				    		  								"/api/" + EnvironmentProperties.getApiVersion() + "/login")
 					     				      										.permitAll()
 					     				      										
-					     				      					   .requestMatchers("/console/**").hasRole("ADMIN")	//cannot use 'admin' in path name, it won't work							     				      										
+					     				      					   //.requestMatchers("/console/**").hasRole("ADMIN")	//cannot use 'admin' in path name, it won't work							     				      										
 					     				      				  	   .requestMatchers("/h2/**").permitAll()					     				      				  	   
 					     				      				  	   .anyRequest().authenticated()		
 					     				      				  	   //.anyRequest().permitAll()

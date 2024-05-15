@@ -98,8 +98,8 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request)
 	{
-		//String path = request.getServletPath();
-		String path = request.getPathInfo();
+		String path = request.getServletPath();
+		//String path = request.getPathInfo();
 		List<String> doNotFilterList = Arrays.asList("/api/" + EnvironmentProperties.getApiVersion() + "/register", 
 													"/api/" + EnvironmentProperties.getApiVersion() + "/login",
 													"/admin",

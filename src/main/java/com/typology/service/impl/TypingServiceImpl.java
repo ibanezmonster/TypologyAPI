@@ -30,6 +30,8 @@ import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.TypologySystem;
 import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.entity.typologySystem.EnneagramTyping;
+import com.typology.entity.typologySystem.EnneagramTypingDisplay;
+import com.typology.entity.user.AppUser;
 import com.typology.entity.user.Typist;
 import com.typology.exception.ExMessageBody;
 import com.typology.filter.AuthoritiesLoggingAfterFilter;
@@ -146,17 +148,17 @@ public class TypingServiceImpl implements TypingService
 		
 		catch(ResourceNotFoundException e){
 			response = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	 				 				 .body("Typing entry could not be created. Profile for: " + entryName + " not found.");
+	 				 				 .body(ExMessageBody.MSG_PREFIX + "Typing entry could not be created. Profile for: " + entryName + " not found.");
 		}
 		
 		catch(DataIntegrityViolationException e){
 			response = ResponseEntity.status(HttpStatus.CONFLICT)
-	 				 				 .body(ExMessageBody.MSG_PREFIX + "Profile for: " + entryName + " already exists.");
+	 				 				 .body(ExMessageBody.MSG_PREFIX + "Typing for: " + entryName + " already exists.");
 		}
 		
 		catch(NoSuchElementException e){
 			response = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-	 				 				 .body("Entry, typology system, or typist not found. Typing entry could not be created.");
+	 				 				 .body(ExMessageBody.MSG_PREFIX + "Entry, typology system, or typist not found. Typing entry could not be created.");
 		}
 		
 		catch(Exception e){
@@ -192,7 +194,26 @@ public class TypingServiceImpl implements TypingService
 				EnneagramTypingCRUD enneagramTypingCRUD = new EnneagramTypingCRUD(enneagramTypingRepository);
 				EnneagramTyping enneagramTyping = enneagramTypingCRUD.readEnneagramTyping(typistName, entryName)
 																	 .orElseThrow(ResourceNotFoundException::new);  
-				list = (TypologySystemTyping) enneagramTyping;		
+				EnneagramTypingDisplay enneagramTypingDTO = new EnneagramTypingDisplay();
+				
+				
+				//convert enneagram typing to dto for output
+				enneagramTypingDTO.setCoreType(enneagramTyping.getCoreType());
+				enneagramTypingDTO.setWing(enneagramTyping.getWing());
+				enneagramTypingDTO.setTritypeOrdered(enneagramTyping.getTritypeOrdered());
+				enneagramTypingDTO.setOverlay(enneagramTyping.getOverlay());
+				enneagramTypingDTO.setInstinctMain(enneagramTyping.getInstinctMain());
+				enneagramTypingDTO.setInstinctStack(enneagramTyping.getInstinctStack());
+				enneagramTypingDTO.setExInstinctMain(enneagramTyping.getExInstinctMain());
+				enneagramTypingDTO.setExInstinctStack(enneagramTyping.getExInstinctStack());
+				enneagramTypingDTO.setTritypeUnordered(enneagramTyping.getTritypeUnordered());
+				enneagramTypingDTO.setInstinctStackFlow(enneagramTyping.getInstinctStackFlow());
+				enneagramTypingDTO.setExInstinctStackAbbreviation(enneagramTyping.getExInstinctStackAbbreviation());
+				enneagramTypingDTO.setExInstinctStackFlow(enneagramTyping.getExInstinctStackFlow());
+				
+				
+				//dto extends typology system typing				
+				list = (TypologySystemTyping) enneagramTypingDTO;	
 			}
 		}
 		

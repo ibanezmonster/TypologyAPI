@@ -122,8 +122,8 @@ CREATE TABLE Enneagram_Typing (
     id INT NOT NULL PRIMARY KEY IDENTITY,
     entry_id INT NOT NULL,
     typist_id INT NOT NULL,
-    core_type INT NOT NULL CHECK(core_type BETWEEN 1 AND 9),
-    wing INT NOT NULL CHECK(wing BETWEEN 1 AND 9),
+    core_type INT NOT NULL CHECK(core_type BETWEEN 0 AND 9),
+    wing INT NOT NULL CHECK(wing BETWEEN 0 AND 9),
     tritype_ordered INT,
     tritype_unordered INT,
     overlay INT,
@@ -132,8 +132,8 @@ CREATE TABLE Enneagram_Typing (
     instinct_stack_flow VARCHAR(30),
     ex_instinct_main VARCHAR(2),
     ex_instinct_stack VARCHAR(8),
-    ex_instinct_stack_abbreviation VARCHAR(3),
-    ex_instinct_stack_flow VARCHAR(30),
+    ex_instinct_stack_abbreviation INT,
+    ex_instinct_stack_flow VARCHAR(3),
     FOREIGN KEY (entry_id) REFERENCES Entry(id) on delete cascade,
     FOREIGN KEY (typist_id) REFERENCES Typist(id) on delete cascade
 );
