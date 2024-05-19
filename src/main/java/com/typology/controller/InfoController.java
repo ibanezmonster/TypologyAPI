@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.typology.entity.info.Teacher;
 import com.typology.entity.user.Typist;
 import com.typology.service.EntryService;
 import com.typology.service.InfoService;

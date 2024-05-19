@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.typology.dto.AppUserRoleDTO;
+import com.typology.dto.AppUserStatusDTO;
 import com.typology.entity.user.AppUser;
 import com.typology.repository.AppUserRepository;
 import com.typology.security.AppUserRoles;
@@ -65,10 +67,11 @@ public class AdminServiceImplTests
         given(appUserRepository.findByName(appUser.getName()))
         					   .willReturn(Optional.of(appUser));
         
-        appUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
+        AppUserRoleDTO appUserDTO = new AppUserRoleDTO();
+        appUserDTO.setRole(AppUserRoles.CONTRIBUTOR.toString());
         
         // when                
-        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(appUser.getName(), appUser);  
+        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(appUser.getName(), appUserDTO);  
                         
         // then
         assertThat(editedAppUserRole).isNotNull();  
@@ -85,10 +88,11 @@ public class AdminServiceImplTests
     	given(appUserRepository.findByName(appUser.getName()))
 		   					   .willReturn(Optional.of(appUser));
         
-    	appUser.setStatus(AppUserStatus.DISABLED.toString());
-    	
+    	AppUserStatusDTO appUserDTO = new AppUserStatusDTO();
+        appUserDTO.setStatus(AppUserStatus.DISABLED.toString());
+        
         // when                
-        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(appUser.getName(), appUser);  
+        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(appUser.getName(), appUserDTO);  
                 
         // then
         assertThat(editedAppUserStatus).isNotNull();   
@@ -107,11 +111,23 @@ public class AdminServiceImplTests
         given(appUserRepository.findByName(appUser.getName()))
         					   .willReturn(Optional.of(appUser));
         
+        
+        AppUser fakeAppUser  = AppUser.builder()
+				 .name("fakey")
+				 .pwd("fdsa")
+				 .registrationTimestamp(ZonedDateTime.now())
+				 .role(AppUserRoles.USER.toString())
+				 .status(AppUserStatus.ENABLED.toString())
+				 .build();
+        
+        
         String invalidValue = "some dumb invalid value";
-        appUser.setRole(invalidValue);
+        
+        AppUserRoleDTO appUserDTO = new AppUserRoleDTO();
+        appUserDTO.setRole(invalidValue);
         
         // when                
-        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(appUser.getName(), appUser);  
+        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(fakeAppUser.getName(), appUserDTO);  
                         
         // then
         assertThat(editedAppUserRole).asString().doesNotContain(invalidValue);
@@ -128,11 +144,23 @@ public class AdminServiceImplTests
         given(appUserRepository.findByName(appUser.getName()))
         					   .willReturn(Optional.of(appUser));
         
-        String invalidValue = "some dumb invalid value";
-        appUser.setStatus(invalidValue);
+        AppUser fakeAppUser  = AppUser.builder()
+				 .name("fakey")
+				 .pwd("fdsa")
+				 .registrationTimestamp(ZonedDateTime.now())
+				 .role(AppUserRoles.USER.toString())
+				 .status(AppUserStatus.ENABLED.toString())
+				 .build();
+       
+       
+       String invalidValue = "some dumb invalid value";
+       
+       AppUserStatusDTO appUserDTO = new AppUserStatusDTO();
+       appUserDTO.setStatus(invalidValue);
         
-        // when                
-        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(appUser.getName(), appUser);  
+
+		// when                
+        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(fakeAppUser.getName(), appUserDTO);  
                         
         // then
         assertThat(editedAppUserStatus).asString().doesNotContain(invalidValue);
@@ -141,7 +169,7 @@ public class AdminServiceImplTests
     
     
     
-    @DisplayName("JUnit service test for edit nonexistent user with valid status")
+    @DisplayName("JUnit service test for edit nonexistent user with valid role")
     @Test
     public void givenNonexistentAppUser_whenEditAppUserRole_thenReturnError(){
     	
@@ -156,11 +184,12 @@ public class AdminServiceImplTests
 									 .role(AppUserRoles.USER.toString())
 									 .status(AppUserStatus.ENABLED.toString())
 									 .build();
-
-        fakeAppUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
+        
+        AppUserRoleDTO appUserDTO = new AppUserRoleDTO();
+        appUserDTO.setRole(AppUserRoles.CONTRIBUTOR.toString());
         
         // when                
-        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(fakeAppUser.getName(), appUser);  
+        ResponseEntity<String> editedAppUserRole = adminService.editUserRole(fakeAppUser.getName(), appUserDTO);  
                         
         // then
         assertThat(editedAppUserRole.getStatusCode().equals(HttpStatus.NOT_FOUND));
@@ -185,10 +214,11 @@ public class AdminServiceImplTests
 									 .status(AppUserStatus.ENABLED.toString())
 									 .build();
 
-        fakeAppUser.setStatus(AppUserStatus.DISABLED.toString());
+        AppUserStatusDTO appUserDTO = new AppUserStatusDTO();        
+        appUserDTO.setStatus(AppUserStatus.DISABLED.toString());
         
         // when                
-        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(fakeAppUser.getName(), appUser);  
+        ResponseEntity<String> editedAppUserStatus = adminService.editUserStatus(fakeAppUser.getName(), appUserDTO);  
                         
         // then
         assertThat(editedAppUserStatus.getStatusCode().equals(HttpStatus.NOT_FOUND));

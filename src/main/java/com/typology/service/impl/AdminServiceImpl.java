@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.typology.exception.ExMessageBody;
 import com.typology.exception.NotFoundException;
+import com.typology.dto.AppUserRoleDTO;
+import com.typology.dto.AppUserStatusDTO;
 import com.typology.entity.user.AppUser;
 import com.typology.repository.AppUserRepository;
 import com.typology.security.AppUserRoles;
@@ -41,7 +43,7 @@ public class AdminServiceImpl implements AdminService
 	}
 
 
-	public ResponseEntity<String> editUserRole(String name, AppUser appUser)
+	public ResponseEntity<String> editUserRole(String name, AppUserRoleDTO appUser)
 	{	
 		ResponseEntity<String> response = null;
 		
@@ -92,7 +94,7 @@ public class AdminServiceImpl implements AdminService
 	}
 	
 	
-	public ResponseEntity<String> editUserStatus(String name, AppUser appUser)
+	public ResponseEntity<String> editUserStatus(String name, AppUserStatusDTO appUser)
 	{	
 		ResponseEntity<String> response = null;
 		

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.typology.dto.AppUserRoleDTO;
+import com.typology.dto.AppUserStatusDTO;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.entity.user.AppUser;
@@ -60,11 +62,10 @@ public class AdminController
 			enneagramTypingConsensus.setTritypeUnordered(000);
 			enneagramTypingConsensus.setExInstinctMain("xx");
 			enneagramTypingConsensus.setExInstinctStack("xx");			
-			enneagramTypingConsensus.setExInstinctStackAbbreviation("xxx");
 			enneagramTypingConsensus.setExInstinctStackFlow("xxx");
 			
 			//non-database fields
-			enneagramTypingConsensus.setExInstinctStackAbbreviation("000");
+			enneagramTypingConsensus.setExInstinctStackAbbreviation(000);
 			enneagramTypingConsensus.setExInstinctStackFlow("xx");
 			
 			enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
@@ -89,16 +90,16 @@ public class AdminController
 	
 	@PatchMapping("/update_user/{name}/role")
 	//@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<String> editUserRole(@PathVariable String name, @RequestBody AppUser appUser)
+	public ResponseEntity<String> editUserRole(@PathVariable String name, @RequestBody AppUserRoleDTO appUserRoleDTO)
 	{	
-		return adminService.editUserRole(name, appUser);
+		return adminService.editUserRole(name, appUserRoleDTO);
 	}
 	
 	
 	@PatchMapping("/update_user/{name}/status")
 	//@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<String> editUserStatus(@PathVariable String name, @RequestBody AppUser appUser)
+	public ResponseEntity<String> editUserStatus(@PathVariable String name, @RequestBody AppUserStatusDTO appUserStatusDTO)
 	{	
-		return adminService.editUserStatus(name, appUser);
+		return adminService.editUserStatus(name, appUserStatusDTO);
 	}
 }

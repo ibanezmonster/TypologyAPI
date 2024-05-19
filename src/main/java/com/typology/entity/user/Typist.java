@@ -12,7 +12,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-//@Builder
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Typist

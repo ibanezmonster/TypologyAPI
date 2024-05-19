@@ -46,7 +46,7 @@ public class EnneagramTypingServiceImplTests
 		enneagramTyping.setInstinctStackFlow("synflow");
 		enneagramTyping.setExInstinctMain("UN");
 		enneagramTyping.setExInstinctStack("UN/BG/SY");
-		enneagramTyping.setExInstinctStackAbbreviation("749");
+		enneagramTyping.setExInstinctStackAbbreviation(749);
 		enneagramTyping.setExInstinctStackFlow("PIS");
 		enneagramTyping.setOverlay(369);
 	}

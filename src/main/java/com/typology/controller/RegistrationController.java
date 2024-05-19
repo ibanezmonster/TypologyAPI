@@ -27,6 +27,7 @@ import com.typology.entity.user.AppUser;
 import com.typology.entity.user.Authority;
 import com.typology.repository.AppUserRepository;
 import com.typology.repository.AuthoritiesRepository;
+import com.typology.security.AppUserAuthorities;
 import com.typology.security.AppUserRoles;
 import com.typology.security.ValidPassword;
 
@@ -95,7 +96,7 @@ public class RegistrationController {
         	//by default, give new user the 'VIEWTYPINGS' authority
         	Authority authority = new Authority();        	
         	authority.setUser(userToCreate);
-        	authority.setName("VIEWTYPINGS");
+        	authority.setName(AppUserAuthorities.VIEWTYPINGS.toString());
         	
         	authoritiesRepository.save(authority);
         	

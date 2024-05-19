@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
-import com.typology.entity.info.Teacher;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.service.EntryService;

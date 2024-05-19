@@ -36,6 +36,9 @@ public class EntryControllerITests extends ContainerStartup
 	@Autowired
     private MockMvc mockMvc;		
     
+	@Autowired
+	EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
+	
     @Autowired
     private EntryRepository entryRepository;
     
@@ -52,26 +55,25 @@ public class EntryControllerITests extends ContainerStartup
   public void givenEntryObject_whenGetEntry_thenReturnSavedEntry() throws Exception{
 
   	//given
-	EnneagramTypingConsensus enneagramTypingConsensus = EnneagramTypingConsensus.builder()
-																			    .coreType(5)
-																			    .wing(6)
-																			    .tritypeOrdered(592)
-																			    .tritypeUnordered(259)
-																			    .overlay(613)
-																			    .instinctMain("so")
-																			    .instinctStack("so/sp")
-																			    .instinctStackFlow("Contraflow")
-																			    .exInstinctMain("CY")
-																			    .exInstinctStack("CY/EX/SY")
-																			    .exInstinctStackAbbreviation("i369")
-																			    .exInstinctStackFlow("IPS")
-																			    .build();
-	  
+		EnneagramTypingConsensus enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(5);
+		enneagramTypingConsensus.setWing(6);
+		enneagramTypingConsensus.setTritypeOrdered(592);
+		enneagramTypingConsensus.setTritypeOrdered(259);
+		enneagramTypingConsensus.setOverlay(613);
+		enneagramTypingConsensus.setInstinctMain("so");
+		enneagramTypingConsensus.setInstinctStack("so/sp");
+		enneagramTypingConsensus.setExInstinctMain("CY");
+		enneagramTypingConsensus.setExInstinctStackFlow("CY/EX/SY"); 
+
+	
+	
 	  Entry entry = new Entry();
 	  entry.setName("Lain");
 	  entry.setCategory(Category.FICTIONAL_CHARACTER);
 	  entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
 	  
+	  enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
 	  entryRepository.save(entry);
 	 
       // when 
@@ -81,7 +83,7 @@ public class EntryControllerITests extends ContainerStartup
       
       // then
       response.andDo(print())										
-              .andExpect(status().isOk())							
+              .andExpect(status().isOk())						
               .andExpect(jsonPath("$.name",							
                       is(entry.getName())));	      
   }
@@ -98,29 +100,29 @@ public class EntryControllerITests extends ContainerStartup
   @WithMockUser(username = "test", password = "test", roles = {"USER"})
   public void givenNonexistentEntryObject_whenGetEntry_thenReturnNothing() throws Exception{
 
-  	//given
-	EnneagramTypingConsensus enneagramTypingConsensus = EnneagramTypingConsensus.builder()
-																			    .coreType(5)
-																			    .wing(6)
-																			    .tritypeOrdered(592)
-																			    .tritypeUnordered(259)
-																			    .overlay(613)
-																			    .instinctMain("so")
-																			    .instinctStack("so/sp")
-																			    .instinctStackFlow("Contraflow")
-																			    .exInstinctMain("CY")
-																			    .exInstinctStack("CY/EX/SY")
-																			    .exInstinctStackAbbreviation("i369")
-																			    .exInstinctStackFlow("IPS")
-																			    .build();
-	  
-	  Entry entry = new Entry();
-	  entry.setName("Lain");
-	  entry.setCategory(Category.FICTIONAL_CHARACTER);
-	  entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
-	  
-	  //not saved, so it doesn't exist
-	  //entryRepository.save(entry);
+	//given
+			EnneagramTypingConsensus enneagramTypingConsensus = new EnneagramTypingConsensus();
+			enneagramTypingConsensus.setCoreType(5);
+			enneagramTypingConsensus.setWing(6);
+			enneagramTypingConsensus.setTritypeOrdered(592);
+			enneagramTypingConsensus.setTritypeOrdered(259);
+			enneagramTypingConsensus.setOverlay(613);
+			enneagramTypingConsensus.setInstinctMain("so");
+			enneagramTypingConsensus.setInstinctStack("so/sp");
+			enneagramTypingConsensus.setExInstinctMain("CY");
+			enneagramTypingConsensus.setExInstinctStackFlow("CY/EX/SY"); 
+
+		
+		
+		  Entry entry = new Entry();
+		  entry.setName("Lain");
+		  entry.setCategory(Category.FICTIONAL_CHARACTER);
+		  entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
+		  
+		  enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		  
+		  //don't save
+		  //entryRepository.save(entry);
 	 
       // when 
       ResultActions response = mockMvc.perform(get("/api/v1/profile/{entryName}", entry.getName())	

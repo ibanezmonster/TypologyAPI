@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.typology.entity.entry.Category;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.EnneagramTypingConsensus;
@@ -44,6 +45,7 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 	@Autowired
 	private TypistRepository typistRepository;
 	
+	private EnneagramTypingConsensus enneagramTypingConsensus;	
 	private EnneagramTyping enneagramTyping;
 	private Entry entry;
 	private Typist typist;
@@ -53,6 +55,13 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 
 		entry = new Entry();
 		entry.setName("Some character");	
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
+		
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(5);
+		enneagramTypingConsensus.setWing(6);
+		
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
 		
 		typist = new Typist();
 		typist.setName("Typist Person");
@@ -67,7 +76,7 @@ public class EnneagramTypingRepositoryITests extends ContainerStartup
 		enneagramTyping.setInstinctStackFlow("synflow");
 		enneagramTyping.setExInstinctMain("UN");
 		enneagramTyping.setExInstinctStack("UN/BG/SY");
-		enneagramTyping.setExInstinctStackAbbreviation("749");
+		enneagramTyping.setExInstinctStackAbbreviation(749);
 		enneagramTyping.setExInstinctStackFlow("PIS");
 		enneagramTyping.setOverlay(369);
 		enneagramTyping.setEntry(entry);

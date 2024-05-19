@@ -42,6 +42,8 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 
 import com.typology.filter.JWTTokenValidatorFilter;
 import com.typology.filter.RequestValidationBeforeFilter;
+import com.typology.security.AppUserAuthorities;
+import com.typology.security.AppUserRoles;
 import com.typology.filter.AuthoritiesLoggingAfterFilter;
 import com.typology.filter.CsrfCookieFilter;
 
@@ -152,10 +154,22 @@ public class SecurityConfig {
 					     				    		  								"/api/" + EnvironmentProperties.getApiVersion() + "/login")
 					     				      										.permitAll()
 					     				      										
-					     				      					   //.requestMatchers("/console/**").hasRole("ADMIN")	//cannot use 'admin' in path name, it won't work							     				      										
-					     				      				  	   .requestMatchers("/h2/**").permitAll()					     				      				  	   
-					     				      				  	   .anyRequest().authenticated()		
-					     				      				  	   //.anyRequest().permitAll()
+					     				      					   //admin console- note: cannot use 'admin' in path name, it won't work
+					     				      					   .requestMatchers("/console/**")
+					     				      					   					.hasRole(AppUserRoles.ADMIN.toString())	
+
+					     				      					   //typings privileges
+					     				      					   .requestMatchers("/api/" + EnvironmentProperties.getApiVersion() + "/my_typings",
+								     				      							"/api/" + EnvironmentProperties.getApiVersion() + "/profile/{entryName}/vote/{typologySystem}",
+					     				      							   			"/api/" + EnvironmentProperties.getApiVersion() + "/profile/{entryName}/vote/{typologySystem}",
+					     				      							   			"/api/" + EnvironmentProperties.getApiVersion() + "/profile/{entryName}/my_typing/{typologySystem}")
+					     				      					   					.hasAuthority(AppUserAuthorities.ADDTYPINGS.toString())
+					     				      					   					     				      							   			
+					     				      					   //h2
+					     				      				  	   //.requestMatchers("/h2/**").permitAll()
+					     				      					   		
+					     				      					   //everything that is not register or login is authenticated
+					     				      				  	   .anyRequest().authenticated()
 					     				      				 )
 				    
 				    //other

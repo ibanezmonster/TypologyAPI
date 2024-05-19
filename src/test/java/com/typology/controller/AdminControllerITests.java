@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.typology.dto.AppUserRoleDTO;
 import com.typology.entity.entry.Category;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.typologySystem.EnneagramTyping;
@@ -52,27 +54,13 @@ public class AdminControllerITests extends ContainerStartup
 {
 	@Autowired
     private MockMvc mockMvc;		
-    
-	@Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @MockBean
-    private AppUserService appUserService;
-    
-    @Mock
+
+    @Autowired
     private AppUserRepository appUserRepository;
-    
-	@Mock
-	private EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
-    
-    @InjectMocks
-    private AdminController adminController;
     
     @Autowired						
     private ObjectMapper objectMapper;
     
-	private EnneagramTypingConsensus enneagramTypingConsensus;
-
     @BeforeEach
    	void setup() {
     	//Typing class error on delete
@@ -159,28 +147,23 @@ public class AdminControllerITests extends ContainerStartup
 
 	  //given
 	  AppUser appUser = new AppUser();
-	  appUser.setName("Kyon");
-	  appUser.setRole(AppUserRoles.USER.toString());
-	  appUser.setStatus("enabled");
-	  String hashedPwd = passwordEncoder.encode("Higurashi9549!");
-	  appUser.setPwd(hashedPwd);
+  	  appUser.setName("Kyon");
+  	  appUser.setRole(AppUserRoles.USER.toString());
+  	  appUser.setStatus("enabled");
+  	  appUser.setPwd("haha");
+  	  appUser.setRegistrationTimestamp(ZonedDateTime.now());
 
   	
 	  appUserRepository.save(appUser);
 	  
-	  
-	  given(appUserService.getAppUserByName(appUser.getName()))
-		  				  .willReturn(Optional.of(appUser));
-	  
-	  appUser.setRole(AppUserRoles.CONTRIBUTOR.toString());
-
-	  
+	  AppUserRoleDTO appuserRoleDTO = new AppUserRoleDTO();
+	  appuserRoleDTO.setRole(AppUserRoles.CONTRIBUTOR.toString());
 	  
 	  //when 
       ResultActions response = mockMvc.perform(patch("/console/update_user/{name}/role", appUser.getName())	
 							          .contentType(MediaType.APPLICATION_JSON)
 							          .characterEncoding("UTF-8")
-    		  						  .content(objectMapper.writeValueAsString(appUser)));								
+    		  						  .content(objectMapper.writeValueAsString(appuserRoleDTO)));								
     
       // then
       response.andDo(print())										
@@ -199,15 +182,12 @@ public class AdminControllerITests extends ContainerStartup
 	  appUser.setName("Kyon");
 	  appUser.setRole(AppUserRoles.USER.toString());
 	  appUser.setStatus("enabled");
-	  String hashedPwd = passwordEncoder.encode("Higurashi9549!");
-	  appUser.setPwd(hashedPwd);
+	  appUser.setPwd("haha");
+  	  appUser.setRegistrationTimestamp(ZonedDateTime.now());
 
-  	
+
 	  appUserRepository.save(appUser);
 	  
-	  
-	  given(appUserService.getAppUserByName(appUser.getName()))
-		  				  .willReturn(Optional.of(appUser));
 	  
 	  appUser.setStatus("disabled");
 
@@ -222,8 +202,5 @@ public class AdminControllerITests extends ContainerStartup
       // then
       response.andDo(print())										
               .andExpect(status().isOk());
-      
-      assertThat(1).isEqualTo(1);
-//              .andExpect(content().string("For user: Kyon, status of: 'enabled' is updated to: 'disabled'."));
   }
 }

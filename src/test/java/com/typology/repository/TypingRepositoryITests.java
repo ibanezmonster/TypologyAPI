@@ -14,9 +14,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.typology.entity.entry.Category;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.EnneagramTyping;
+import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.entity.typologySystem.TypologySystem;
 import com.typology.entity.user.Typist;
 import com.typology.integration.ContainerStartup;
@@ -39,20 +41,30 @@ public class TypingRepositoryITests extends ContainerStartup
 	@Autowired
 	private TypologySystemRepository typologySystemRepository;
 	
+	@Autowired
+	private EnneagramTypingConsensusRepository enneagramTypingConsensusRepository;
+	
 	private Typing typing;
 	private Typist typist;
 	private Entry entry;
 	private TypologySystem mysterySystem;
 	private TypologySystem mysterySystem2;
+	private EnneagramTypingConsensus enneagramTypingConsensus;
 
 	@BeforeEach
     public void setup(){
 		
 		typist = new Typist();
-		typist.setName("UFDISUFODS");
+		typist.setName("UFDISUFODS");		
+		
+		enneagramTypingConsensus = new EnneagramTypingConsensus();
+		enneagramTypingConsensus.setCoreType(5);
+		enneagramTypingConsensus.setWing(6);
 		
 		entry = new Entry();		
-		entry.setName("Some character");					
+		entry.setName("Some character");
+		entry.setCategory(Category.FICTIONAL_CHARACTER);
+		entry.setEnneagramTypingConsensus(enneagramTypingConsensus);
 		
 		mysterySystem = new TypologySystem();
 		//mysterySystem.setId(50);
@@ -70,18 +82,21 @@ public class TypingRepositoryITests extends ContainerStartup
     public void givenTyping_whenSave_thenReturnSavedTyping(){
 
         //given
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		entryRepository.save(entry);
 		
+		typologySystemRepository.save(mysterySystem);
+		typistRepository.save(typist);
+		typingRepository.save(typing);	
     	
         //when
-		typistRepository.save(typist);
-		entryRepository.save(entry);
 		typologySystemRepository.save(mysterySystem);
 		
 		Typing savedTyping = typingRepository.save(typing);
 
         // then
         assertThat(savedTyping).isNotNull();
-        assertThat(savedTyping.getId()).isGreaterThan(0);
+        assertThat(savedTyping.getTypist()).isEqualTo(typist);
     }
 	
 	
@@ -100,9 +115,15 @@ public class TypingRepositoryITests extends ContainerStartup
 		typing2.setEntry(entry);
 		typing2.setTypologySystem(mysterySystem2);		
 		
-		typistRepository.save(typist);
+		
+		
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
 		entryRepository.save(entry);
+		
 		typologySystemRepository.save(mysterySystem);
+		typistRepository.save(typist);
+		typingRepository.save(typing);
+		
 		typologySystemRepository.save(mysterySystem2);
 
 		//save a typist(user's) mysterySystem typing of one entry
@@ -139,20 +160,73 @@ public class TypingRepositoryITests extends ContainerStartup
 		typing2.setEntry(entry);
 		typing2.setTypologySystem(mysterySystem2);		
 		
-		typistRepository.save(typist);
-		entryRepository.save(entry);
-		typologySystemRepository.save(mysterySystem);
+		
+		typistRepository.save(typist);		
 		typologySystemRepository.save(mysterySystem2);
-
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		entryRepository.save(entry);
+		
 		//don't save these
 		//typingRepository.save(typing);		
 		//typingRepository.save(typing2);
 
 		
         //when  	
-		Optional<List<Typing>> foundTypings = typingRepository.viewAllOfMyTypings(typing.getTypist().getName());
+		Optional<List<Typing>> foundTypings = typingRepository.viewAllOfMyTypings(typing2.getTypist().getName());
 
         // then
         assertThat(foundTypings.get().size()).isZero();
     }
+	
+	
+	
+	
+	
+	@DisplayName("JUnit test for returning typing when finding by entry+system+typist")
+    @Test
+    public void givenTyping_whenFindTypingByTypistAndEntryAndTypologySystemName_thenReturnTyping(){
+
+        //given
+		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
+		entryRepository.save(entry);
+		
+		typologySystemRepository.save(mysterySystem);
+		typistRepository.save(typist);
+		typingRepository.save(typing);	
+
+		
+        //when  	
+		Optional<Typing> foundTyping = typingRepository.findTypingByTypistAndEntryAndTypologySystemName(typist.getName(), entry.getName(), mysterySystem.getName());
+
+        // then
+        assertThat(foundTyping.get()).isNotNull();
+        assertThat(foundTyping.get().getEntry().getName()).isEqualTo(entry.getName());
+        assertThat(foundTyping.get().getTypist().getName()).isEqualTo(typist.getName());
+        assertThat(foundTyping.get().getTypologySystem().getName()).isEqualTo(mysterySystem.getName());
+    }
+	
+	
+	
+	
+	
+	@DisplayName("JUnit test for returning typing when finding by entry+system+typist (negative scenario)")
+    @Test
+    public void givenNonexistentTyping_whenFindTypingByTypistAndEntryAndTypologySystemName_thenReturnNothing(){
+
+        //given
+			
+
+		
+        //when  	
+		Optional<Typing> foundTyping = typingRepository.findTypingByTypistAndEntryAndTypologySystemName(typist.getName(), entry.getName(), mysterySystem.getName());
+
+        // then
+        assertThat(foundTyping).isEmpty();
+    }
+	
+	
+	
+	
+	
+	
 }

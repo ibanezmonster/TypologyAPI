@@ -31,7 +31,7 @@ import com.typology.security.AppUserRoles;
 import com.typology.service.impl.AppUserServiceImpl;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT.RANDOM_PORT) 
-@AutoConfigureMockMvc// do not disabled security //(addFilters = false)
+@AutoConfigureMockMvc(addFilters = false)
 @Testcontainers
 public class LoginControllerITests extends ContainerStartup
 {

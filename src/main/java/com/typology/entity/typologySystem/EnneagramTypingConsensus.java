@@ -57,7 +57,7 @@ public final class EnneagramTypingConsensus extends TypologySystemTyping
 	
 	//@Column(insertable = false, updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) 
-	private String exInstinctStackAbbreviation;
+	private int exInstinctStackAbbreviation;
 	
 	//@Column(insertable = false, updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) 

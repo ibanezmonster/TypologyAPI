@@ -37,13 +37,15 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SecondaryTable;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-//@Builder
+@AllArgsConstructor
+@Builder
 @Entity
 //@Table(name = "Entry")
 //@NamedQueries(value = {
@@ -65,7 +67,7 @@ public class Entry
 	@Enumerated(EnumType.STRING)
 	private Category category;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="enneagram_typing_consensus_id", referencedColumnName = "id")
 	private EnneagramTypingConsensus enneagramTypingConsensus;
 

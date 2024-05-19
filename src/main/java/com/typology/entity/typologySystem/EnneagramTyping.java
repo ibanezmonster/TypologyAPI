@@ -9,6 +9,7 @@ import com.typology.entity.entry.Entry;
 import com.typology.entity.user.Typist;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,6 +23,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,8 +35,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-//@Builder
+@Builder
 @EqualsAndHashCode(callSuper=false)
+@AllArgsConstructor
 @NoArgsConstructor
 //@Table(name="Enneagram_Typing")
 public final class EnneagramTyping extends TypologySystemTyping

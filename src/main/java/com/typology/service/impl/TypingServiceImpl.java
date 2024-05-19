@@ -19,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.dto.MyTypingsDTO;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
+import com.typology.entity.entry.TypingID;
 import com.typology.entity.typologySystem.TypologySystem;
 import com.typology.entity.typologySystem.TypologySystemTyping;
 import com.typology.entity.typologySystem.EnneagramTyping;
@@ -102,16 +106,19 @@ public class TypingServiceImpl implements TypingService
 	
 	
 
-	
+	@PreAuthorize("hasAuthority('ADDTYPINGS')")
 	public ResponseEntity<String> addTyping(String entryName, String typologySystem, TypologySystemTyping typing) {
 		
 		ResponseEntity<String> response;
 		
+		//get typist name from user session		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String typistName = authentication.getName();
 		
 		try{			
 			//get logged-in user
 			//and check if they exist in Typist table			
-			Typist typist = this.typistRepository.findByName("Newtypist")
+			Typist typist = this.typistRepository.findByName(typistName)
 					 							 .orElseThrow();	//NoSuchElementException
 
 			//transaction: save in enneagram_typing table
@@ -174,12 +181,12 @@ public class TypingServiceImpl implements TypingService
 	
 	
 	
-	
-	
+	@PreAuthorize("hasAuthority('ADDTYPINGS')")
 	public ResponseEntity<?> viewTyping(String entryName, String typologySystem) throws JsonProcessingException {	
 		
-		//get typist name from user session
-		String typistName = "Newtypist";
+		//get typist name from user session		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String typistName = authentication.getName();
 		
 		//for future typing system additions:
 		//run the query based on the system being used
@@ -239,14 +246,18 @@ public class TypingServiceImpl implements TypingService
 	
 	
 	
-	
+	@PreAuthorize("hasAuthority('ADDTYPINGS')")
 	public ResponseEntity<?> viewAllOfMyTypings() throws JsonProcessingException {		
 
 		List<Typing> typings = new ArrayList<>();
-		List<MyTypingsDTO> myTypingsDTO = new ArrayList<>();		
+		List<MyTypingsDTO> myTypingsDTO = new ArrayList<>();	
+		
+		//get typist name from user session		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String typistName = authentication.getName();
 		
 		try {
-			typings = typingRepository.viewAllOfMyTypings("Newtypist")
+			typings = typingRepository.viewAllOfMyTypings(typistName)
 					  				  .orElseThrow(ResourceNotFoundException::new);
 			
 			//convert to DTO
@@ -277,16 +288,20 @@ public class TypingServiceImpl implements TypingService
 	
 
 	
-	
+	@PreAuthorize("hasAuthority('ADDTYPINGS')")
 	public ResponseEntity<String> updateTyping(String entryName, String typologySystem, TypologySystemTyping typing) {
 		
 		ResponseEntity<String> response;
+		
+		//get typist name from user session		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String typistName = authentication.getName();
 		
 		//create switch based on type of object (typology system used)
 		//transaction: save in enneagramtyping table and typing table
 		try {
 			
-			Typist typist = this.typistRepository.findByName("Newtypist")
+			Typist typist = this.typistRepository.findByName(typistName)
 					 							 .orElseThrow();	//NoSuchElementException
 			
 			switch(typologySystem){
@@ -322,22 +337,34 @@ public class TypingServiceImpl implements TypingService
 	
 
 
-	
+	@PreAuthorize("hasAuthority('ADDTYPINGS')")
 	public ResponseEntity<HttpStatus> deleteTyping(String entryName, String typologySystem) {
+		
+		//get typist name from user session		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String typistName = authentication.getName();
 		
 		//create switch based on type of object (typology system used)
 		//transaction: save in enneagramtyping table and typing table
 		try{
 			
-			Typist typist = this.typistRepository.findByName("Newtypist")
-					 							 .orElseThrow();	//NoSuchElementException
-
 			switch(typologySystem){
-			case "enneagram" ->	{								
+			case "enneagram" ->	{		
+									//delete from enneagram typing table
 									EnneagramTypingCRUD enneagramTypingCRUD = new EnneagramTypingCRUD(enneagramTypingRepository);
-									EnneagramTyping enneagramTypingToDelete = enneagramTypingCRUD.readEnneagramTyping(typist.getName(), entryName)
+									EnneagramTyping enneagramTypingToDelete = enneagramTypingCRUD.readEnneagramTyping(typistName, entryName)
 																								 .orElseThrow(ResourceNotFoundException::new);
-									enneagramTypingCRUD.deleteEnneagramTyping(enneagramTypingToDelete);
+									enneagramTypingCRUD.deleteEnneagramTyping(enneagramTypingToDelete);									
+									
+									
+									//delete from typing table
+									Typing typing = typingRepository.findTypingByTypistAndEntryAndTypologySystemName(typistName, entryName, typologySystem)
+																	.orElseThrow(ResourceNotFoundException::new);
+																		
+									typingRepository.delete(typing);
+									
+									//todo: delete in one query, not working!
+									//typingRepository.deleteTypingByTypistAndEntryAndTypologySystemName(typistName, entryName, typologySystem);
 								}
 			
 			default -> {return null;}

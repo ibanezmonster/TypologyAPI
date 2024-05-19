@@ -5,11 +5,11 @@ use test_typology_api_db;
 SET IDENTITY_INSERT Typology_System ON;
 INSERT INTO Typology_System (id, name)
 VALUES 
-(1, 'enneagram'),
-(2, 'socionics'),
-(3, 'attitudinal_psyche'),
-(4, 'mbti'),
-(5, 'ops');
+--(1, 'enneagram'),
+(1, 'socionics'),
+(2, 'attitudinal_psyche'),
+(3, 'mbti'),
+(4, 'ops');
 
 
 -- Insert into Typist
@@ -46,7 +46,7 @@ ex_instinct_stack,
 ex_instinct_stack_abbreviation, 
 ex_instinct_stack_flow)
 VALUES
-(111, 9, 8, 973, 379, 468, 'sp', 'sp/sx', 'synflow', 'UN', 'UN/CY/AY', 'PIS', 'synflow');
+(111, 9, 8, 973, 379, 468, 'sp', 'sp/sx', 'synflow', 'UN', 'UN/CY/SY', 739, 'PIS');
 
 
 -- Insert into Entry
@@ -80,25 +80,25 @@ ex_instinct_stack,
 ex_instinct_stack_abbreviation, 
 ex_instinct_stack_flow)
 VALUES
-(888, 666, 2, 6, 5, 648, 468, 739, 'sp', 'sp/sx', 'synflow', 'EX', 'EX/CY/AY', 'PIS', 'synflow');
+(888, 666, 2, 6, 5, 648, 468, 739, 'sp', 'sp/sx', 'synflow', 'EX', 'EX/CY/FD', '638', 'PIS');
 
 
 
 -- Insert into Typing
 --IF OBJECT_ID('*Typing*', 'U') IS NOT NULL 
 SET IDENTITY_INSERT Enneagram_Typing OFF;
-SET IDENTITY_INSERT Typing ON;
-INSERT INTO Typing(id, typist_id, entry_id, typology_system_id, created_timestamp, updated_timestamp)
+--SET IDENTITY_INSERT Typing ON;
+INSERT INTO Typing(typist_id, entry_id, typology_system_id, created_timestamp, updated_timestamp)
 VALUES
-(345, 2, 666, 1, null, null),
-(346, 4, 666, 2, null, null),
-(347, 2, 666, 3, null, null);
+(2, 666, 1, null, null),
+(4, 666, 2, null, null),
+(2, 666, 3, null, null);
 
 
 
 -- Insert into App_User
 --IF OBJECT_ID('*App_User*', 'U') IS NOT NULL 
-SET IDENTITY_INSERT Typing OFF;
+--SET IDENTITY_INSERT Typing OFF;
 SET IDENTITY_INSERT App_User ON;
 INSERT INTO App_User(id, name, pwd, role, registration_timestamp, status)
 VALUES

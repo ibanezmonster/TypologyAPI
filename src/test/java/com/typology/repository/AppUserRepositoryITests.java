@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.typology.entity.user.AppUser;
 import com.typology.integration.ContainerStartup;
+import com.typology.security.AppUserRoles;
 
 @DataJpaTest
 @AutoConfigureMockMvc(addFilters = false)	//disabling security  
@@ -29,17 +31,15 @@ public class AppUserRepositoryITests extends ContainerStartup
 	private AppUser appUser;
 	 
 	
-	
     @BeforeEach
     public void setup(){
     	
-    	appUser = new AppUser();    	
-    	appUser.setId(123);
-    	appUser.setName("Ibanez");
-    	appUser.setPwd("haha");   
-    	appUser.setRole("USER");
-    	appUser.setRegistrationTimestamp(ZonedDateTime.now());
-    	appUser.setStatus("enabled");
+      appUser = new AppUser();
+  	  appUser.setName("Kyon");
+  	  appUser.setRole(AppUserRoles.USER.toString());
+  	  appUser.setStatus("enabled");
+  	  appUser.setPwd("haha");
+  	  appUser.setRegistrationTimestamp(ZonedDateTime.now());
     }
     
     

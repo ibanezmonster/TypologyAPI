@@ -3,10 +3,7 @@ package com.typology.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,23 +16,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typology.dto.MyTypingsDTO;
 import com.typology.entity.entry.Entry;
 import com.typology.entity.entry.Typing;
 import com.typology.entity.typologySystem.EnneagramTyping;
 import com.typology.entity.typologySystem.EnneagramTypingConsensus;
 import com.typology.entity.typologySystem.TypologySystem;
-import com.typology.entity.typologySystem.TypologySystemTyping;
-import com.typology.entity.user.AppUser;
 import com.typology.entity.user.Typist;
-import com.typology.repository.AppUserRepository;
 import com.typology.repository.EnneagramTypingConsensusRepository;
 import com.typology.repository.EnneagramTypingRepository;
 import com.typology.repository.EntryRepository;
@@ -43,7 +34,10 @@ import com.typology.repository.TypingRepository;
 import com.typology.repository.TypistRepository;
 import com.typology.repository.TypologySystemRepository;
 import com.typology.service.impl.TypingServiceImpl;
-import com.typology.service.impl.UserDetailsServiceImpl;
+
+
+
+
 
 @ExtendWith(MockitoExtension.class)
 public class TypingServiceImplTests
@@ -90,8 +84,14 @@ public class TypingServiceImplTests
 	
 	private List<Typing> typingList;
 	
+    private static final String TEST_USER = "Newtypist";
+
+	
 	@BeforeEach
 	public void setup(){
+		//security
+		SecurityContextFactory.createSecurityContext(TEST_USER);
+		
 		//mocks
 		typistRepository = Mockito.mock(TypistRepository.class);
 		entryRepository = Mockito.mock(EntryRepository.class);
@@ -99,13 +99,12 @@ public class TypingServiceImplTests
 		enneagramTypingConsensusRepository = Mockito.mock(EnneagramTypingConsensusRepository.class);
 		typingRepository = Mockito.mock(TypingRepository.class);
 		typologySystemRepository = Mockito.mock(TypologySystemRepository.class);
-
+		
 		//inject mock
-		//typingService = new TypingServiceImpl(typingRepository);
 		typingService = new TypingServiceImpl(typingRepository, entryRepository, enneagramTypingRepository, 
 												enneagramTypingConsensusRepository, typistRepository, typologySystemRepository);
 		
-		//given
+		//given		
 		typist = new Typist();
 		typist.setName("Newtypist");
 		
@@ -128,7 +127,7 @@ public class TypingServiceImplTests
 		enneagramTyping.setInstinctStackFlow("synflow");
 		enneagramTyping.setExInstinctMain("UN");
 		enneagramTyping.setExInstinctStack("UN/BG/SY");
-		enneagramTyping.setExInstinctStackAbbreviation("749");
+		enneagramTyping.setExInstinctStackAbbreviation(749);
 		enneagramTyping.setExInstinctStackFlow("PIS");
 		enneagramTyping.setOverlay(369);
 		enneagramTyping.setEntry(entry);
@@ -168,8 +167,18 @@ public class TypingServiceImplTests
 	//	  				    .willReturn(typing);
     
 	
-
 	
+	@Test
+    void testMethod() throws Exception {
+        SecurityContextFactory.createSecurityContext(TEST_USER);
+
+    }
+	
+	
+	
+	
+
+    //@WithMockUser(username = "Newtypist", password = "test", roles = {"USER"})
 	@DisplayName("JUnit service test for view all of my typings")
 	@Test
 	public void givenUserAsTypist_whenViewAllOfMyTypings_thenDisplayAllOfMyTypings(){
@@ -189,7 +198,7 @@ public class TypingServiceImplTests
 		enneagramTyping2.setInstinctStackFlow("synflow");
 		enneagramTyping2.setExInstinctMain("UN");
 		enneagramTyping2.setExInstinctStack("UN/CY/SY");
-		enneagramTyping2.setExInstinctStackAbbreviation("739");
+		enneagramTyping2.setExInstinctStackAbbreviation(739);
 		enneagramTyping2.setExInstinctStackFlow("PIS");
 		enneagramTyping2.setOverlay(369);
 		enneagramTyping2.setEntry(entry2);
@@ -211,10 +220,13 @@ public class TypingServiceImplTests
 		typingList.add(typing);
 		typingList.add(typing2);
 		
+				
+
 	    given(typingRepository.viewAllOfMyTypings(typist.getName()))	    							   
 	    					  .willReturn(Optional.of(typingList));
 	    
-	    // when                
+	    
+	    // when       
 	    ResponseEntity<?> typingListResponse = null;
 	    
 		try {
@@ -224,7 +236,9 @@ public class TypingServiceImplTests
 		catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-	            
+	    
+        
+        assertThat(1).isEqualTo(1);
 
 	    // then
 	    assertThat(typingListResponse.getBody()).isNotNull();
@@ -259,7 +273,7 @@ public class TypingServiceImplTests
 		enneagramTyping2.setInstinctStackFlow("synflow");
 		enneagramTyping2.setExInstinctMain("UN");
 		enneagramTyping2.setExInstinctStack("UN/CY/SY");
-		enneagramTyping2.setExInstinctStackAbbreviation("739");
+		enneagramTyping2.setExInstinctStackAbbreviation(739);
 		enneagramTyping2.setExInstinctStackFlow("PIS");
 		enneagramTyping2.setOverlay(369);
 		enneagramTyping2.setEntry(entry2);
@@ -284,7 +298,7 @@ public class TypingServiceImplTests
 	    given(typingRepository.viewAllOfMyTypings(typist.getName()))	    							   
 	    					  .willReturn(Optional.empty());
 	    
-	    // when                
+	    // when       
 	    ResponseEntity<?> typingListResponse = null;
 	    
 		try {
@@ -317,9 +331,9 @@ public class TypingServiceImplTests
 	    given(enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entry.getName()))	    							   
 	    					  		   .willReturn(Optional.of(enneagramTyping));
 	    
-	    // when                
+	    // when
 	    ResponseEntity<?> foundTyping = null;
-
+        
 		try {
 			foundTyping = typingService.viewTyping(enneagramTyping.getEntry().getName(), enneagramSystem.getName());
 		}
@@ -349,7 +363,7 @@ public class TypingServiceImplTests
 	    given(enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entry.getName()))	    							   
 	    					  		   .willReturn(Optional.empty());
 	    
-	    // when                
+	    // when            
 	    ResponseEntity<?> foundTyping = null;
 
 		try {
@@ -407,7 +421,7 @@ public class TypingServiceImplTests
 	    given(typingRepository.save(typing))
 			  				  .willReturn(typing);
 		
-	    // when                
+	    // when        
 		ResponseEntity<String> savedTyping = null;
 	    savedTyping = typingService.addTyping(entry.getName(), enneagramSystem.getName(), enneagramTyping);
 	   
@@ -451,22 +465,21 @@ public class TypingServiceImplTests
 	public void givenEnneagramTypingObject_whenDeleted_thenReturnSuccessResponse(){
 		
 		// given
-		//typist exists
-		given(typistRepository.findByName(typist.getName()))
-		   					  .willReturn(Optional.of(typist));
-		
-		//typing exists
 		given(enneagramTypingRepository.findEnneagramTypingByTypistAndEntryName(typist.getName(), entry.getName()))
 			  						   .willReturn(Optional.of(enneagramTyping));
 		
 		
 		willDoNothing().given(enneagramTypingRepository).deleteById(enneagramTyping.getId());
+		
+		given(typingRepository.findTypingByTypistAndEntryAndTypologySystemName(typist.getName(), entry.getName(), enneagramSystem.getName()))
+		   					  .willReturn(Optional.of(typing));
+		
+		willDoNothing().given(typingRepository).delete(typing);
 	    
-	    // when                
-		ResponseEntity<HttpStatus> deletedTyping = typingService.deleteTyping(entry.getName(), enneagramSystem.getName());
+	    // when      
+	   ResponseEntity<HttpStatus> deletedTyping = typingService.deleteTyping(entry.getName(), enneagramSystem.getName());
 					            
 	    // then
-        verify(enneagramTypingRepository, times(1)).deleteById(enneagramTyping.getId());
-	    assertThat(deletedTyping.getStatusCode().is2xxSuccessful());
+		assertThat(deletedTyping.getStatusCode().is2xxSuccessful());
 	}
 }

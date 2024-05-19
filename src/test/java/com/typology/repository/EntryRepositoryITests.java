@@ -48,7 +48,7 @@ public class EntryRepositoryITests extends ContainerStartup
 		enneagramTypingConsensus.setTritypeUnordered(000);
 		enneagramTypingConsensus.setExInstinctMain("xx");
 		enneagramTypingConsensus.setExInstinctStack("xx");
-		enneagramTypingConsensus.setExInstinctStackAbbreviation("xx");
+		enneagramTypingConsensus.setExInstinctStackAbbreviation(000);
 		enneagramTypingConsensus.setExInstinctStackFlow("xx");
 		
 		enneagramTypingConsensusRepository.save(enneagramTypingConsensus);
@@ -92,7 +92,7 @@ public class EntryRepositoryITests extends ContainerStartup
     }
 	
 	
-	@DisplayName("JUnit test for finding entry by name")
+	@DisplayName("JUnit test for finding entry by name (negative scenario)")
     @Test
     public void givenNonexistentEntry_whenFindEntryByName_thenReturnNothing(){
 

@@ -99,7 +99,7 @@ CREATE TABLE Enneagram_Typing_Consensus (
     instinct_stack_flow VARCHAR(30),
     ex_instinct_main VARCHAR(2),
     ex_instinct_stack VARCHAR(8),
-    ex_instinct_stack_abbreviation VARCHAR(3),
+    ex_instinct_stack_abbreviation INT,
     ex_instinct_stack_flow VARCHAR(30)
 );
 
@@ -138,7 +138,23 @@ CREATE TABLE Enneagram_Typing (
     FOREIGN KEY (typist_id) REFERENCES Typist(id) on delete cascade
 );
 
-CREATE TABLE Typing (
+
+
+CREATE TABLE Typing (    
+    typist_id INT NOT NULL,
+    entry_id INT NOT NULL,
+    typology_system_id INT NOT NULL,
+    created_timestamp DATETIMEOFFSET,
+    updated_timestamp DATETIMEOFFSET,
+    FOREIGN KEY (typist_id) REFERENCES Typist(id),
+    FOREIGN KEY (entry_id) REFERENCES Entry(id),
+    FOREIGN KEY (typology_system_id) REFERENCES Typology_System(id) on delete cascade--,
+    --CONSTRAINT PK_Typing PRIMARY KEY (typist_id, entry_id, typology_system_id)
+);
+
+
+--old typing table
+/*CREATE TABLE Typing (
     id INT NOT NULL PRIMARY KEY IDENTITY,
     typist_id INT NOT NULL,
     entry_id INT NOT NULL,
@@ -149,7 +165,7 @@ CREATE TABLE Typing (
     FOREIGN KEY (entry_id) REFERENCES Entry(id),
     FOREIGN KEY (typology_system_id) REFERENCES Typology_System(id) on delete cascade
 );
-
+*/
 
 CREATE TABLE Socionics (
     id INT NOT NULL IDENTITY(1,1) PRIMARY KEY
