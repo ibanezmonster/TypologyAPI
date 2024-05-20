@@ -20,3 +20,8 @@ admin:
 for v2:
 -add OAuth2 login
 -add ability for anonymous users to submit typing votes as anonymous vote
+
+
+
+demo:
+https://www.youtube.com/watch?v=0IrVLWsM-n4
