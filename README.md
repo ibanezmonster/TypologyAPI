@@ -4,6 +4,7 @@ for v1:
 -Add new typing systems (AP, OPS, MBTI, Socionics, etc.)
 -Implement refresh token for security
 -add e-mail login option
+-add pagination for results
 
 stats:
 -update consensus typing calculations to reflect most votes 
